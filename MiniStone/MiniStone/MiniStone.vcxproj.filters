@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="게임보드">
+      <UniqueIdentifier>{64f42700-7c84-4131-a065-b28e34cb7230}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="엔진">
+      <UniqueIdentifier>{f2866ad7-a5be-46b8-90e5-1b829c2b6b68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="엔진\숫자">
+      <UniqueIdentifier>{2edac045-1a71-4842-a4b2-6a51ce671920}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="엔진\시간">
+      <UniqueIdentifier>{3301d019-7e28-401a-a3fe-c4634c86205a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="오브젝트">
+      <UniqueIdentifier>{82f435ee-2a99-42c4-83bc-ed3db1fbdb20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="입력처리">
+      <UniqueIdentifier>{49fd4f99-11da-4e8b-aafe-c37594b2775b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Winmain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GameBoard.cpp">
+      <Filter>게임보드</Filter>
+    </ClCompile>
+    <ClCompile Include="Num.cpp">
+      <Filter>엔진\숫자</Filter>
+    </ClCompile>
+    <ClCompile Include="Time.cpp">
+      <Filter>엔진\시간</Filter>
+    </ClCompile>
+    <ClCompile Include="Card.cpp">
+      <Filter>오브젝트</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>입력처리</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="preCompile.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="define.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MainFraimWork.h">
+      <Filter>소스 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GameBoard.h">
+      <Filter>게임보드</Filter>
+    </ClInclude>
+    <ClInclude Include="Num.h">
+      <Filter>엔진\숫자</Filter>
+    </ClInclude>
+    <ClInclude Include="Time.h">
+      <Filter>엔진\시간</Filter>
+    </ClInclude>
+    <ClInclude Include="Card.h">
+      <Filter>오브젝트</Filter>
+    </ClInclude>
+    <ClInclude Include="Struct.h">
+      <Filter>오브젝트</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>입력처리</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseCtrl.h">
+      <Filter>입력처리</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
