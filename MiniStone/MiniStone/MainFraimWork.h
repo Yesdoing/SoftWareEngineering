@@ -3,6 +3,7 @@
 #include "GameBoard.h"
 #include "Card.h"
 #include "InputManager.h"
+#include "ObjectManager.h"
 
 extern HWND g_hWnd;
 extern HINSTANCE		g_hInstance;
@@ -10,6 +11,7 @@ extern HINSTANCE		g_hInstance;
 class MainFrameWork{
 private:
 	CardResource C1;
+	CObjectManager O1;
 	GameBoard board;
 
 	//
@@ -35,6 +37,7 @@ public:
 
 		board.init();
 		C1.init();
+		O1.init();
 		//√ ±‚»≠
 
 	}
@@ -61,7 +64,7 @@ public:
 
 		board.render(backDC);
 		C1.render(backDC);
-
+		O1.render(backDC);
 		BitBlt(dc, 0, 0, 1920, 1000, backDC, 0, 0, SRCCOPY);
 
 		//	SelectObject(backDC, o );

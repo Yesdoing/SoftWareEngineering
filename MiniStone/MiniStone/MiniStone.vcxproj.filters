@@ -31,6 +31,9 @@
     <Filter Include="입력처리">
       <UniqueIdentifier>{49fd4f99-11da-4e8b-aafe-c37594b2775b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="이미지처리">
+      <UniqueIdentifier>{bfd4c01e-98c1-438f-a49e-8bb1507e88e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Winmain.cpp">
@@ -50,6 +53,15 @@
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>입력처리</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>오브젝트</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageManager.cpp">
+      <Filter>이미지처리</Filter>
+    </ClCompile>
+    <ClCompile Include="Inventory.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -74,14 +86,23 @@
     <ClInclude Include="Card.h">
       <Filter>오브젝트</Filter>
     </ClInclude>
-    <ClInclude Include="Struct.h">
-      <Filter>오브젝트</Filter>
-    </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>입력처리</Filter>
     </ClInclude>
     <ClInclude Include="MouseCtrl.h">
       <Filter>입력처리</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManager.h">
+      <Filter>오브젝트</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageDB.h">
+      <Filter>이미지처리</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageManager.h">
+      <Filter>이미지처리</Filter>
+    </ClInclude>
+    <ClInclude Include="Inventory.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

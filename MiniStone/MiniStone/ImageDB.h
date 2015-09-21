@@ -1,24 +1,37 @@
 #pragma once
 #include "preCompile.h"
 
+enum CType{
+	Minion,
+	Spell,
+	Weapon,
+};
+
 struct SImageDB{
+
+	HDC	mDC;
 	HBITMAP hBit; //앞면 이미지
 	HBITMAP BackBit; // 뒷면이미지
 	BITMAP Bit; //이미지 정보
+	RECT Source;
+	const char *str;
 };
 
-struct SCard{
-	enum CType{
-		Minion,
-		Spell,
-		Weapon,
-	};
 
+struct SCard{
+
+	CType cardtype;
 	SImageDB imgDB;
 	int Cnum;
+	char *Cname[20];
 	int CAttack;
 	int CLife;
 	int CMana;
-	char *Cname[20];
+	
+
+	RECT cardRect;
+	POINT Position;
 };
 
+
+typedef std::vector <SImageDB*> ImageVec;
