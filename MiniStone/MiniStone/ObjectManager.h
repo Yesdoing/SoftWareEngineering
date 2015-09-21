@@ -11,27 +11,26 @@ class CObjectManager
 private:
 	SCard CardObject;
 	FILE *f;
-	char Cnumbuf[3];
 
 public:
 	void init(){
 
 		f = fopen("card.dat", "rb");
 		if (f != NULL){
-			fscanf(f, "%d %s %d %d %d", &CardObject.Cnum, &CardObject.Cname, CardObject.CAttack, CardObject.CLife, CardObject.CMana);
-			int a = 1;
-
+			fscanf(f, "%s %s %d %d %d", &CardObject.Cnum, &CardObject.Cname, &CardObject.CAttack, &CardObject.CLife, &CardObject.CMana);
 		}
-
+	
 		CardObject.Position.x = 100;
 		CardObject.Position.y = 100;
 
-		itoa(CardObject.Cnum, Cnumbuf, 10);
-
 		char pathBuf[_MAX_DIR] = { 0, };
 
-		strcat_s(pathBuf, _MAX_DIR, "./CardResource/");
-		strcat_s(pathBuf, _MAX_DIR, Cnumbuf);
+		ZeroMemory(pathBuf, _MAX_DIR);
+
+		strcat_s(pathBuf, _MAX_DIR, "./CardResource");
+		strcat_s(pathBuf, _MAX_DIR, "/");
+		strcat_s(pathBuf, _MAX_DIR, CardObject.Cnum);
+		strcat_s(pathBuf, _MAX_DIR, ".bmp");
 
 		HDC hdc = GetDC(g_hWnd);
 		CardObject.imgDB.hBit = (HBITMAP)LoadImage(NULL, pathBuf, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
@@ -39,12 +38,12 @@ public:
 		GetObject(CardObject.imgDB.hBit, sizeof(CardObject.imgDB.Bit), &CardObject.imgDB.Bit);
 		SelectObject(CardObject.imgDB.mDC, CardObject.imgDB.hBit);
 
+		int a = 10;
+
 		CardObject.imgDB.Source.left = CardObject.Position.x;
 		CardObject.imgDB.Source.top = CardObject.Position.y;
 		CardObject.imgDB.Source.right = CardObject.Position.y + CardObject.imgDB.Bit.bmWidth;
 		CardObject.imgDB.Source.bottom = CardObject.Position.x + CardObject.imgDB.Bit.bmHeight;
-
-		int a = 10;
 
 		fclose(f);
 	}
