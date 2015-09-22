@@ -22,8 +22,8 @@ struct SCard{
 
 	CType cardtype;
 	SImageDB imgDB;
-	char Cnum[3];
-	char *Cname[20];
+	char Cnum[4];
+	char Cname[20];
 	int CAttack;
 	int CLife;
 	int CMana;

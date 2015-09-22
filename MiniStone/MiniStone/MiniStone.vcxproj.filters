@@ -34,6 +34,9 @@
     <Filter Include="이미지처리">
       <UniqueIdentifier>{bfd4c01e-98c1-438f-a49e-8bb1507e88e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="인벤토리">
+      <UniqueIdentifier>{c6da1a09-2f84-40f5-94ca-9ddc2f54ab78}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Winmain.cpp">
@@ -60,8 +63,11 @@
     <ClCompile Include="ImageManager.cpp">
       <Filter>이미지처리</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectController.cpp">
+      <Filter>오브젝트</Filter>
+    </ClCompile>
     <ClCompile Include="Inventory.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>인벤토리</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -101,8 +107,11 @@
     <ClInclude Include="ImageManager.h">
       <Filter>이미지처리</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectController.h">
+      <Filter>오브젝트</Filter>
+    </ClInclude>
     <ClInclude Include="Inventory.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>인벤토리</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

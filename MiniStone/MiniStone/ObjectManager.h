@@ -14,24 +14,25 @@ private:
 
 public:
 	void init(){
-
+		
+		SCard temp;
 		f = fopen("card.dat", "rb");
 		if (f != NULL){
-			fscanf(f, "%s %s %d %d %d", &CardObject.Cnum, &CardObject.Cname, &CardObject.CAttack, &CardObject.CLife, &CardObject.CMana);
+			fscanf(f, "%s %s %d %d %d", &temp.Cnum, &temp.Cname, &temp.CAttack, &temp.CLife, &temp.CMana);
 		}
 	
+		CardObject = temp;
+
 		CardObject.Position.x = 100;
 		CardObject.Position.y = 100;
 
 		char pathBuf[_MAX_DIR] = { 0, };
 
-		ZeroMemory(pathBuf, _MAX_DIR);
-
-		strcat_s(pathBuf, _MAX_DIR, "./CardResource");
+		strcat_s(pathBuf, _MAX_DIR, "./CardResouce");
 		strcat_s(pathBuf, _MAX_DIR, "/");
 		strcat_s(pathBuf, _MAX_DIR, CardObject.Cnum);
 		strcat_s(pathBuf, _MAX_DIR, ".bmp");
-
+		
 		HDC hdc = GetDC(g_hWnd);
 		CardObject.imgDB.hBit = (HBITMAP)LoadImage(NULL, pathBuf, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 		CardObject.imgDB.mDC = CreateCompatibleDC(GetDC(GetFocus()));

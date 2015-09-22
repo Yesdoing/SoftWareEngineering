@@ -82,6 +82,7 @@
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Num.cpp" />
+    <ClCompile Include="ObjectController.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Winmain.cpp" />
@@ -96,6 +97,7 @@
     <ClInclude Include="MainFraimWork.h" />
     <ClInclude Include="MouseCtrl.h" />
     <ClInclude Include="Num.h" />
+    <ClInclude Include="ObjectController.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="preCompile.h" />
     <ClInclude Include="ImageDB.h" />

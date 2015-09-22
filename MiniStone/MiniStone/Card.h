@@ -24,7 +24,7 @@ private:
 public:
 	void init(){
 		CNum = 00;
-		*CName = "황금카드";
+		CName[20] = "황금카드";
 		CAttack = 5;
 		CLife = 1;
 		Position.x = 500;
