@@ -27,8 +27,8 @@ public:
 		CName[20] = "황금카드";
 		CAttack = 5;
 		CLife = 1;
-		Position.x = 500;
-		Position.y = 500;
+		Position.x = 100;
+		Position.y = 100;
 
 
 		// 랜더링//

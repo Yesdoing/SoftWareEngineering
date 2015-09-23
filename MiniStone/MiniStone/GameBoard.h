@@ -19,7 +19,7 @@ public:
 
 
 		// 랜더링//
-		hBitmap = (HBITMAP)LoadImage(NULL, "./게임보드2.bmp", IMAGE_BITMAP,
+		hBitmap = (HBITMAP)LoadImage(NULL, "./Board.bmp", IMAGE_BITMAP,
 			0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 		GetObject(hBitmap, sizeof(bit), &bit);
 

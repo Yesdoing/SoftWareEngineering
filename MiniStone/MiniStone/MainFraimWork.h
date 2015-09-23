@@ -4,6 +4,7 @@
 #include "Card.h"
 #include "InputManager.h"
 #include "ObjectManager.h"
+#include "Inventory.h"
 
 extern HWND g_hWnd;
 extern HINSTANCE		g_hInstance;
@@ -13,11 +14,14 @@ private:
 	CardResource C1;
 	CObjectManager O1;
 	GameBoard board;
-
+	CInventory Inven1;
 	//
 	HDC dc, backDC;
 	HBITMAP backBuf;
 	//
+
+	bool Inven;
+
 
 public:
 	void Initialize(){
@@ -38,12 +42,22 @@ public:
 		board.init();
 		C1.init();
 		O1.init();
+		Inven1.Init();
 		//초기화
 
 	}
 
 	void update(){
+		DWORD _key = InputManager::getInstance()->getKeyState();;
+
 		//업데이트? Progress??
+		if (_key & MYKEY_FLAG::MK_I)
+		{
+			if (!Inven) Inven = true;
+			else Inven = false;
+		}
+		Inven1.MoveInventory();
+
 	}
 
 	void Progress(){
@@ -51,7 +65,7 @@ public:
 		InputManager::getInstance()->updateKeyState();
 
 		C1.move();
-
+		update();
 		render();
 	}
 
@@ -61,10 +75,10 @@ public:
 
 
 
-
 		board.render(backDC);
 		C1.render(backDC);
 		O1.render(backDC);
+		if (Inven)	Inven1.render(backDC);
 		BitBlt(dc, 0, 0, 1920, 1000, backDC, 0, 0, SRCCOPY);
 
 		//	SelectObject(backDC, o );

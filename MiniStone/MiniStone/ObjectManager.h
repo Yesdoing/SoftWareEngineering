@@ -39,7 +39,6 @@ public:
 		GetObject(CardObject.imgDB.hBit, sizeof(CardObject.imgDB.Bit), &CardObject.imgDB.Bit);
 		SelectObject(CardObject.imgDB.mDC, CardObject.imgDB.hBit);
 
-		int a = 10;
 
 		CardObject.imgDB.Source.left = CardObject.Position.x;
 		CardObject.imgDB.Source.top = CardObject.Position.y;

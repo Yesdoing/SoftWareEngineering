@@ -1,6 +1,6 @@
 #pragma once
-#define WINDOW_WIDTH 1920	
-#define WINDOW_HEIGHT 1080
+#define WINDOW_WIDTH 1080	
+#define WINDOW_HEIGHT 608
 #define WINDOW_CLASSNAME "TCG2"
 
 #ifdef _DEBUG
