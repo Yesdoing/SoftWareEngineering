@@ -80,9 +80,9 @@ void InitWindow(){
 
 	AdjustWindowRect(&_rect, WS_OVERLAPPEDWINDOW, NULL);
 
-	g_hWnd = CreateWindow(WINDOW_CLASSNAME, "Knight run TCG",
+	g_hWnd = CreateWindow(WINDOW_CLASSNAME, "MiniStone",
 		WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
-		WINDOW_WIDTH, WINDOW_HEIGHT, NULL, NULL, g_hInstance, NULL);
+		WINDOW_WIDTH+15, WINDOW_HEIGHT+40, NULL, NULL, g_hInstance, NULL);
 
 
 }

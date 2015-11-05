@@ -37,6 +37,9 @@
     <Filter Include="인벤토리">
       <UniqueIdentifier>{c6da1a09-2f84-40f5-94ca-9ddc2f54ab78}</UniqueIdentifier>
     </Filter>
+    <Filter Include="플레이어">
+      <UniqueIdentifier>{9a230aab-1cf4-44d0-8163-ef20b55474c0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Winmain.cpp">
@@ -68,6 +71,15 @@
     </ClCompile>
     <ClCompile Include="Inventory.cpp">
       <Filter>인벤토리</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>플레이어</Filter>
+    </ClCompile>
+    <ClCompile Include="Deck.cpp">
+      <Filter>오브젝트</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -112,6 +124,15 @@
     </ClInclude>
     <ClInclude Include="Inventory.h">
       <Filter>인벤토리</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>플레이어</Filter>
+    </ClInclude>
+    <ClInclude Include="Deck.h">
+      <Filter>오브젝트</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu.h">
+      <Filter>소스 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

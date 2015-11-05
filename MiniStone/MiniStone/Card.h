@@ -1,101 +1,110 @@
 #pragma once
 #include "preCompile.h"
 #include "InputManager.h"
+#include "ImageDB.h"
+
 extern HWND g_hWnd;
 extern HINSTANCE		g_hInstance;
 
-class CardResource
-{
-private:
-	int CNum;
-	char *CName[20];
-	int CAttack;
-	int CLife;
-	RECT cardRect;
-	POINT Position;
-	POINT CapPos;
-	//
-	HDC	mDC;
-	HBITMAP	hBitmap;
-	BITMAP bit;
-	//
-	bool hang;
+class Card{
+protected:
+	SImageDB	Fieldimg;
+	SImageDB	handimg;
+	CType		type;
+	char		Cnum[4];
+	char		Cname[10];
+	int			CAttack;
+	int			CLife;
+	int			CMana;
+	POINT		Position;
+	int			CardSize;
+
 
 public:
-	void init(){
-		CNum = 00;
-		CName[20] = "황금카드";
-		CAttack = 5;
-		CLife = 1;
-		Position.x = 100;
-		Position.y = 100;
+	void SetCardPosition(int _x, int _y)
+	{
+		Position.x = _x;
+		Position.y = _y;
+	}
+
+	char* getCardnum()
+	{
+		return Cnum;
+	}
+
+	void init(char* _Cnum, char* _Cname, int _CAtk, int _CLife, int _CMana){
+		char pathBuf[_MAX_DIR] = { 0, };
+
+		type = Minion;
 
 
-		// 랜더링//
+		CardSize = 5;
+
+		strcpy(this->Cnum, _Cnum);
+		strcpy(this->Cname, _Cname);
+		this->CAttack = _CAtk;
+		this->CLife = _CLife;
+		this->CMana = _CMana;
+
+		this->Position.x = 800;
+		this->Position.y = 300;
+
+		strcat_s(pathBuf, _MAX_DIR, "./CardResouce");
+		strcat_s(pathBuf, _MAX_DIR, "/");
+		strcat_s(pathBuf, _MAX_DIR, this->Cnum);
+		strcat_s(pathBuf, _MAX_DIR, ".bmp");
+
 		HDC hdc = GetDC(g_hWnd);
-		hBitmap = (HBITMAP)LoadImage(NULL, "./CardResouce/001.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-		mDC = CreateCompatibleDC(GetDC(GetFocus()));
-		GetObject(hBitmap, sizeof(bit), &bit);
-		SelectObject(mDC, hBitmap);
+		handimg.hBit = (HBITMAP)LoadImage(NULL, pathBuf, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		handimg.mDC = CreateCompatibleDC(GetDC(GetFocus()));
+		GetObject(handimg.hBit, sizeof(handimg.Bit), &handimg.Bit);
+		SelectObject(handimg.mDC, handimg.hBit);
 
 
-		cardRect.left = Position.x;
-		cardRect.top = Position.y;
-		cardRect.bottom = Position.y + bit.bmHeight;
-		cardRect.right = Position.x + bit.bmWidth;
+		ZeroMemory(pathBuf, sizeof(pathBuf));
 
-		hang = false;
+		strcat_s(pathBuf, _MAX_DIR, "./CardFieldResource");
+		strcat_s(pathBuf, _MAX_DIR, "/");
+		strcat_s(pathBuf, _MAX_DIR, this->Cnum);
+		strcat_s(pathBuf, _MAX_DIR, ".bmp");
+
+		Fieldimg.hBit = (HBITMAP)LoadImage(NULL, pathBuf, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		Fieldimg.mDC = CreateCompatibleDC(GetDC(GetFocus()));
+		GetObject(Fieldimg.hBit, sizeof(Fieldimg.Bit), &Fieldimg.Bit);
+		SelectObject(Fieldimg.mDC, Fieldimg.hBit);
+
+
+		this->handimg.Source.left = 0;
+		this->handimg.Source.top = 0;
+		this->handimg.Source.right = this->handimg.Bit.bmWidth / 5;
+		this->handimg.Source.bottom = this->handimg.Bit.bmWidth / 5;
+	}
+	
+
+	void Handrender(HDC& dc){
+		TransparentBlt(dc, Position.x, Position.y, (100 + handimg.Bit.bmWidth) / CardSize,
+			(100 + handimg.Bit.bmHeight) / CardSize,
+			handimg.mDC,
+			0,
+			0,
+			handimg.Bit.bmWidth,
+			handimg.Bit.bmHeight,
+			RGB(255, 128, 128));
 	}
 
-	void render(HDC& dc){
-		TransparentBlt(dc, Position.x, Position.y, (100 + bit.bmWidth) / 3, (100 + bit.bmHeight) / 3, mDC, 0, 0, bit.bmWidth, bit.bmHeight, RGB(255, 128, 128));
-	}
-
-	void move(){
-
-		DWORD key = InputManager::getInstance()->getKeyState();
-		//마우스 좌표 출력
-
-		cardRect.left = Position.x;
-		cardRect.top = Position.y;
-		cardRect.bottom = Position.y + bit.bmHeight;
-		cardRect.right = Position.x + bit.bmWidth;
-
-		POINT pt = InputManager::getInstance()->getMousePos();
-
-		if (PtInRect(&cardRect, pt)){
-			//PtInRect = 점과 사각형의 충돌을 검출하는 함수
-
-			if (key & MYKEY_FLAG::MK_LCLK){
-				if (!hang) hang = true;
-				else hang = false;
-				CapPos = InputManager::getInstance()->getMousePos();
-			}
-		}
-
-
-		if (hang)
-		{
-			POINT moveCard;
-
-			moveCard.x = pt.x - CapPos.x;
-			moveCard.y = pt.y - CapPos.y;
-
-			Position.x += moveCard.x;
-			Position.y += moveCard.y;
-		}
-
-		CapPos = pt;
+	void Fieldrender(HDC& dc){
+		TransparentBlt(dc, Position.x, Position.y, (100 + Fieldimg.Bit.bmWidth) / CardSize,
+			(100 + Fieldimg.Bit.bmHeight) / CardSize,
+			Fieldimg.mDC,
+			0,
+			0,
+			Fieldimg.Bit.bmWidth,
+			Fieldimg.Bit.bmHeight,
+			RGB(255, 128, 128));
 	}
 
 
-	void release(){
-		DeleteObject(hBitmap);              ///////////////
-		DeleteDC(mDC);                   ///////////////
 
-	}
-
-	CardResource();
-	~CardResource();
+	Card();
+	~Card();
 };
-

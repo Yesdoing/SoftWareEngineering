@@ -1,7 +1,7 @@
 #pragma once
-#define WINDOW_WIDTH 1080	
-#define WINDOW_HEIGHT 608
-#define WINDOW_CLASSNAME "TCG2"
+#define WINDOW_WIDTH 1024
+#define WINDOW_HEIGHT 768
+#define WINDOW_CLASSNAME "MiniStone"
 
 #ifdef _DEBUG
 #define __DEV_MODE__

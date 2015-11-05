@@ -5,20 +5,29 @@
 #include "InputManager.h"
 #include "ObjectManager.h"
 #include "Inventory.h"
+#include "Player.h"
+#include "Deck.h"
+#include "Menu.h"
 
 extern HWND g_hWnd;
 extern HINSTANCE		g_hInstance;
 
 class MainFrameWork{
 private:
-	CardResource C1;
-	CObjectManager O1;
+
+
+	Menu MenuIF;
+	int GameState;
+//	Player P1;
+//	CardResource C1;
+//	CObjectManager O1;
 	GameBoard board;
-	CInventory Inven1;
-	//
+//	CInventory Inven1;
+	Deck	D1;
+
 	HDC dc, backDC;
 	HBITMAP backBuf;
-	//
+
 
 	bool Inven;
 
@@ -33,52 +42,64 @@ public:
 
 		/*
 		// 랜더링//
-		dc = GetDC(g_hWnd);
+		dc = GetDC(g_hWnd); 
 		backDC = CreateCompatibleDC(dc);
 		backBuf = CreateCompatibleBitmap(dc, 1920, 1000);
 		(HBITMAP)SelectObject(backDC, backBuf);
 		*/
-
+		GameState = 0;
+		MenuIF.init();
+		D1.init();
 		board.init();
-		C1.init();
-		O1.init();
-		Inven1.Init();
+//		C1.init();
+//		O1.init();
+//		P1.init();
+	//	Inven1.Init();
 		//초기화
 
 	}
 
 	void update(){
 		DWORD _key = InputManager::getInstance()->getKeyState();;
-
+		GameState = MenuIF.GetState();
 		//업데이트? Progress??
-		if (_key & MYKEY_FLAG::MK_I)
-		{
-			if (!Inven) Inven = true;
-			else Inven = false;
-		}
-		Inven1.MoveInventory();
-
 	}
 
 	void Progress(){
 		InputManager::getInstance()->updateMousePos();
 		InputManager::getInstance()->updateKeyState();
+		
+////메뉴창 구현완료
+//		switch (GameState){
+//		case 0:
+//			MenuIF.Menurender(dc);
+//			break;
+//		case 1:
+//			MenuIF.Menu1_render(dc);
+//			break;
+//		case 2:
+//			MenuIF.Menu2_render(dc);
+//			break;
+//		case 3:
+//			MenuIF.Menu3_render(dc);
+//			break;
+//		case 4:
+//			MenuIF.Menu4_render(dc);
+//			break;
+//		}
 
-		C1.move();
-		update();
 		render();
+		update();
+	
 	}
 
 	void render(){
 
-
-
-
+	
 
 		board.render(backDC);
-		C1.render(backDC);
-		O1.render(backDC);
-		if (Inven)	Inven1.render(backDC);
+//		O1.render(backDC, 5);
+//		P1.Draw(backDC);
 		BitBlt(dc, 0, 0, 1920, 1000, backDC, 0, 0, SRCCOPY);
 
 		//	SelectObject(backDC, o );

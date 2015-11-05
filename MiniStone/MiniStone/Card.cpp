@@ -1,11 +1,11 @@
 #include "Card.h"
 
 
-CardResource::CardResource()
+Card::Card()
 {
 }
 
 
-CardResource::~CardResource()
+Card::~Card()
 {
 }

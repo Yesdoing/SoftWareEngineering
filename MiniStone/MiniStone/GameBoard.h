@@ -19,7 +19,7 @@ public:
 
 
 		// 랜더링//
-		hBitmap = (HBITMAP)LoadImage(NULL, "./Board.bmp", IMAGE_BITMAP,
+		hBitmap = (HBITMAP)LoadImage(NULL, "./BoardResource/Ex_board.bmp", IMAGE_BITMAP,
 			0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 		GetObject(hBitmap, sizeof(bit), &bit);
 
@@ -37,8 +37,6 @@ public:
 
 
 		BitBlt(dc, 0, 0, bit.bmWidth, bit.bmHeight, mDC, 0, 0, SRCCOPY);// 비트맵출력부분
-
-
 
 
 

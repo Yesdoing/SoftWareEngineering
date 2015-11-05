@@ -1,11 +1,11 @@
-#include "ObjectManager.h"
-
-
-CObjectManager::CObjectManager()
-{
-}
-
-
-CObjectManager::~CObjectManager()
-{
-}
+//#include "ObjectManager.h"
+//
+//
+//CObjectManager::CObjectManager()
+//{
+//}
+//
+//
+//CObjectManager::~CObjectManager()
+//{
+//}

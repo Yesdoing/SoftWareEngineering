@@ -8,6 +8,8 @@
 #include <list>
 #include <map>
 #include <string>
+#include <string.h>
+#include <time.h>
 
 #include <io.h>
 #include <winnt.h>

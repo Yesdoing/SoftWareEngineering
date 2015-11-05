@@ -77,28 +77,34 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Card.cpp" />
+    <ClCompile Include="Deck.cpp" />
     <ClCompile Include="GameBoard.cpp" />
     <ClCompile Include="ImageManager.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="Inventory.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Num.cpp" />
     <ClCompile Include="ObjectController.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Winmain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Card.h" />
+    <ClInclude Include="Deck.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="GameBoard.h" />
     <ClInclude Include="ImageManager.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="MainFraimWork.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="MouseCtrl.h" />
     <ClInclude Include="Num.h" />
     <ClInclude Include="ObjectController.h" />
     <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="preCompile.h" />
     <ClInclude Include="ImageDB.h" />
     <ClInclude Include="Time.h" />
