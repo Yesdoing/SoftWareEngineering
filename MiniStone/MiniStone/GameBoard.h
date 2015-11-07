@@ -19,7 +19,7 @@ public:
 
 
 		// ·£´õ¸µ//
-		hBitmap = (HBITMAP)LoadImage(NULL, "./BoardResource/Ex_board.bmp", IMAGE_BITMAP,
+		hBitmap = (HBITMAP)LoadImage(NULL, "./BoardResource/worldmap.bmp", IMAGE_BITMAP,
 			0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 		GetObject(hBitmap, sizeof(bit), &bit);
 

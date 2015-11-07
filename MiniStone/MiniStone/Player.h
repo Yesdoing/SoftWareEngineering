@@ -3,7 +3,6 @@
 #include "InputManager.h"
 //#include "ObjectManager.h"
 #include "Card.h"
-#include "Inventory.h"
 #include "ImageDB.h"
 
 extern HWND g_hWnd;
@@ -16,12 +15,24 @@ private:
 		int PMana; //현재 마나
 		int MaxLife; // 최대 체력
 		int PLife; //현재 체력 
+		int Handnum; //내핸드 수
+		int Drawnum; //드로우 수
 		RECT	Inven[30];
-
-
 		SImageDB PlayerImg; //플레이어 이미지
 		SImageDB FirstDrawImg;
+		Card ExDrawImg;
+
+
+		int tick;
+		int value;
+		bool flag1;
+		bool flagOnce;
+		int max;
+		int min;
+
+
 private:
+	Card		CHand[30];
 	Card		Cdeck[30];
 	char		Cnum[4];
 	char		Cname[10];
@@ -32,15 +43,30 @@ private:
 
 
 public:
-
 	void init(){
 		int i = 0;
 		f = fopen("card.dat", "rb");
-		while (f != NULL){
-			fscanf(f, "%s %s %d %d %d", &Cnum, &Cname, CAttack, CLife, CMana);
+		while (fscanf(f, "%s %s %d %d %d", &Cnum, &Cname, &CAttack, &CLife, &CMana) != EOF){
 			Cdeck[i].init(Cnum, Cname, CAttack, CLife, CMana);
 			i++;
 		}
+
+		for (int i = 0; i < 30; i++){
+			Inven[i].left = 70 + (20*i);
+			Inven[i].top = 690;
+			Inven[i].right = 90 + (20*i);
+			Inven[i].bottom = 765;
+		}
+
+		Handnum = 0;
+		Drawnum = 0;
+
+		tick = 0;
+		value = 80;
+		flag1 = true;
+		flagOnce = true;
+		max = 1;
+		min = 50;
 	}
 
 	void suffle(){
@@ -59,10 +85,36 @@ public:
 		}
 	}
 
-	void draw(){
+	void draw(HDC& dc){
+		CHand[Drawnum] = Cdeck[Drawnum];
+		CHand[Drawnum].SetCardPosition(Inven[Drawnum].left, Inven[Drawnum].top);
+		ExDrawImg = Cdeck[Drawnum];
+		ExDrawImg.SetCardPosition(850, 413);
+		ExDrawImg.SetCardSize(3);
 
+		if (++tick > 5) {
+			tick = 0;
+					if (--value <= max)
+						flag1 = false;
+		}
+		if (flag1)	ExDrawImg.Handrender(dc);
+
+		for(int k=0; k<Drawnum; k++) CHand[k].Handrender(dc);
+		if(Drawnum < 30) Drawnum++;
 	}
 
+	void Update(POINT pos){
+		for (int i = 0; i < 30; i++){
+			if (PtInRect(&Inven[i], pos)){
+				CHand[i].SetCardSize(4);
+				CHand[i].SetCardPosition(Inven[i].left - 30, Inven[i].top - 180);
+			}
+			else {
+				CHand[i].SetCardSize(5);
+				CHand[i].SetCardPosition(Inven[i].left, Inven[i].top);
+			}
+		}
+	}
 //private:
 //	int MaxMana; //최대 마나
 //	int PMana; //현재 마나
@@ -144,4 +196,3 @@ public:
 	Player();
 	~Player();
 };
-

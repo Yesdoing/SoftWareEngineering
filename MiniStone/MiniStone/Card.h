@@ -21,16 +21,29 @@ protected:
 
 
 public:
+	void SetCardSize(int num)
+	{
+		CardSize = num;
+	}
 	void SetCardPosition(int _x, int _y)
 	{
 		Position.x = _x;
 		Position.y = _y;
 	}
 
+	POINT getCardPosition(){
+		return Position;
+	}
 	char* getCardnum()
 	{
 		return Cnum;
 	}
+
+	SImageDB getHandImg()
+	{
+		return handimg;
+	}
+
 
 	void init(char* _Cnum, char* _Cname, int _CAtk, int _CLife, int _CMana){
 		char pathBuf[_MAX_DIR] = { 0, };
@@ -102,8 +115,6 @@ public:
 			Fieldimg.Bit.bmHeight,
 			RGB(255, 128, 128));
 	}
-
-
 
 	Card();
 	~Card();
