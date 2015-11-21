@@ -76,38 +76,38 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Battle.cpp" />
     <ClCompile Include="Card.cpp" />
-    <ClCompile Include="Deck.cpp" />
     <ClCompile Include="GameBoard.cpp" />
     <ClCompile Include="ImageManager.cpp" />
     <ClCompile Include="InputManager.cpp" />
-    <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Num.cpp" />
-    <ClCompile Include="ObjectController.cpp" />
-    <ClCompile Include="ObjectManager.cpp" />
+    <ClCompile Include="ObjectControll.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Winmain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Battle.h" />
     <ClInclude Include="Card.h" />
-    <ClInclude Include="Deck.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="GameBoard.h" />
     <ClInclude Include="ImageManager.h" />
     <ClInclude Include="InputManager.h" />
-    <ClInclude Include="Inventory.h" />
     <ClInclude Include="MainFraimWork.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="MouseCtrl.h" />
+    <ClInclude Include="Network.h" />
     <ClInclude Include="Num.h" />
-    <ClInclude Include="ObjectController.h" />
-    <ClInclude Include="ObjectManager.h" />
+    <ClInclude Include="ObjectControll.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="preCompile.h" />
     <ClInclude Include="ImageDB.h" />
     <ClInclude Include="Time.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

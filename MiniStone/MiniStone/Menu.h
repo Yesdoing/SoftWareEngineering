@@ -64,10 +64,10 @@ public:
 		SelectObject(Menu4.mDC, Menu4.hBit);
 
 
-		M1.left = 430;
-		M1.top = 218;
-		M1.right = 595;
-		M1.bottom = 245;
+			M1.left = 430;
+			M1.top = 218;
+			M1.right = 595;
+			M1.bottom = 245;
 
 		M2.left = 397;
 		M2.top = 278;
@@ -89,33 +89,76 @@ public:
 		BitBlt(dc, 0, 0, Opening.Bit.bmWidth, Opening.Bit.bmHeight, Opening.mDC, 0, 0, SRCCOPY);// 비트맵출력부분
 	}
 
-	void Menurender(const HDC& dc){
-		BitBlt(dc, 0, 0, MenuInterface.Bit.bmWidth, MenuInterface.Bit.bmHeight, MenuInterface.mDC, 0, 0, SRCCOPY);// 비트맵출력부분
+	void render(const HDC& dc){
+		switch (GetState())
+		{
+		case 0:
+			BitBlt(dc, 0, 0, MenuInterface.Bit.bmWidth, MenuInterface.Bit.bmHeight, MenuInterface.mDC, 0, 0, SRCCOPY);
+			break;
+		case 1:
+			BitBlt(dc, 0, 0, Menu1.Bit.bmWidth, Menu1.Bit.bmHeight, Menu1.mDC, 0, 0, SRCCOPY);
+			break;
+		case 2:
+			BitBlt(dc, 0, 0, Menu2.Bit.bmWidth, Menu2.Bit.bmHeight, Menu2.mDC, 0, 0, SRCCOPY);
+			break;
+		case 3:
+			BitBlt(dc, 0, 0, Menu3.Bit.bmWidth, Menu3.Bit.bmHeight, Menu3.mDC, 0, 0, SRCCOPY);
+			break;
+		case 4:
+			BitBlt(dc, 0, 0, Menu4.Bit.bmWidth, Menu4.Bit.bmHeight, Menu4.mDC, 0, 0, SRCCOPY);
+			break;
+		case 5:
+			BitBlt(dc, 0, 0, Opening.Bit.bmWidth, Opening.Bit.bmHeight, Opening.mDC, 0, 0, SRCCOPY);
+			break;
+		}
 	}
 
-	void Menu1_render(const HDC& dc){
-		BitBlt(dc, 0, 0, Menu1.Bit.bmWidth, Menu1.Bit.bmHeight, Menu1.mDC, 0, 0, SRCCOPY);// 비트맵출력부분
-	}
+	//void Menurender(const HDC& dc){
+	//	BitBlt(dc, 0, 0, MenuInterface.Bit.bmWidth, MenuInterface.Bit.bmHeight, MenuInterface.mDC, 0, 0, SRCCOPY);// 비트맵출력부분
+	//}
 
-	void Menu2_render(const HDC& dc){
-		BitBlt(dc, 0, 0, Menu2.Bit.bmWidth, Menu2.Bit.bmHeight, Menu2.mDC, 0, 0, SRCCOPY);// 비트맵출력부분
-	}
+	//void Menu1_render(const HDC& dc){
+	//	BitBlt(dc, 0, 0, Menu1.Bit.bmWidth, Menu1.Bit.bmHeight, Menu1.mDC, 0, 0, SRCCOPY);// 비트맵출력부분
+	//}
 
-	void Menu3_render(const HDC& dc){
-		BitBlt(dc, 0, 0, Menu3.Bit.bmWidth, Menu3.Bit.bmHeight, Menu3.mDC, 0, 0, SRCCOPY);// 비트맵출력부분
-	}
+	//void Menu2_render(const HDC& dc){
+	//	BitBlt(dc, 0, 0, Menu2.Bit.bmWidth, Menu2.Bit.bmHeight, Menu2.mDC, 0, 0, SRCCOPY);// 비트맵출력부분
+	//}
 
-	void Menu4_render(const HDC& dc){
-		BitBlt(dc, 0, 0, Menu4.Bit.bmWidth, Menu4.Bit.bmHeight, Menu4.mDC, 0, 0, SRCCOPY);// 비트맵출력부분
-	}
+	//void Menu3_render(const HDC& dc){
+	//	BitBlt(dc, 0, 0, Menu3.Bit.bmWidth, Menu3.Bit.bmHeight, Menu3.mDC, 0, 0, SRCCOPY);// 비트맵출력부분
+	//}
 
+	//void Menu4_render(const HDC& dc){
+	//	BitBlt(dc, 0, 0, Menu4.Bit.bmWidth, Menu4.Bit.bmHeight, Menu4.mDC, 0, 0, SRCCOPY);// 비트맵출력부분
+	//}
+	bool offOpening = true;
 	int GetState(){
 		POINT _pos = InputManager::getInstance()->getMousePos();
-		if (PtInRect(&M1, _pos)) return 1;
-		else if (PtInRect(&M2, _pos)) return 2;
-		else if (PtInRect(&M3, _pos)) return 3;
-		else if (PtInRect(&M4, _pos)) return 4;
-		else return 0;
+		DWORD _key = InputManager::getInstance()->getKeyState();
+
+		if (_key & MYKEY_FLAG::MK_LCLK)
+			offOpening = false;
+		if (offOpening) return 5;
+		else{
+			if (PtInRect(&M1, _pos)) return 1;
+			else if (PtInRect(&M2, _pos)) return 2;
+			else if (PtInRect(&M3, _pos)) return 3;
+			else if (PtInRect(&M4, _pos)) return 4;
+			else return 0;
+		}
+	}
+
+	int update(POINT pos){
+		DWORD _key = InputManager::getInstance()->getKeyState();
+		if (_key & MYKEY_FLAG::MK_LCLK)
+		{
+			if (PtInRect(&M1, pos)) return 1;
+			else if (PtInRect(&M2, pos)) return 2;
+			else if (PtInRect(&M3, pos)) return 3;
+			else if (PtInRect(&M4, pos)) return 4;
+		}
+
 	}
 
 

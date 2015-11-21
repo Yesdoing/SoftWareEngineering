@@ -34,11 +34,17 @@
     <Filter Include="이미지처리">
       <UniqueIdentifier>{bfd4c01e-98c1-438f-a49e-8bb1507e88e4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="인벤토리">
-      <UniqueIdentifier>{c6da1a09-2f84-40f5-94ca-9ddc2f54ab78}</UniqueIdentifier>
-    </Filter>
     <Filter Include="플레이어">
       <UniqueIdentifier>{9a230aab-1cf4-44d0-8163-ef20b55474c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="배틀">
+      <UniqueIdentifier>{bb9de944-2e77-4e58-ae8a-49f0c73a5746}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="메뉴">
+      <UniqueIdentifier>{7059485a-902a-4dec-8db9-d323f73423e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="네트워크">
+      <UniqueIdentifier>{711097ff-bfb6-4fbd-8e98-fec5399fcaa3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -60,26 +66,20 @@
     <ClCompile Include="InputManager.cpp">
       <Filter>입력처리</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectManager.cpp">
-      <Filter>오브젝트</Filter>
-    </ClCompile>
     <ClCompile Include="ImageManager.cpp">
       <Filter>이미지처리</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectController.cpp">
-      <Filter>오브젝트</Filter>
-    </ClCompile>
-    <ClCompile Include="Inventory.cpp">
-      <Filter>인벤토리</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>플레이어</Filter>
     </ClCompile>
-    <ClCompile Include="Deck.cpp">
-      <Filter>오브젝트</Filter>
+    <ClCompile Include="Battle.cpp">
+      <Filter>배틀</Filter>
     </ClCompile>
     <ClCompile Include="Menu.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>메뉴</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectControll.cpp">
+      <Filter>오브젝트</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -110,29 +110,29 @@
     <ClInclude Include="MouseCtrl.h">
       <Filter>입력처리</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectManager.h">
-      <Filter>오브젝트</Filter>
-    </ClInclude>
     <ClInclude Include="ImageDB.h">
       <Filter>이미지처리</Filter>
     </ClInclude>
     <ClInclude Include="ImageManager.h">
       <Filter>이미지처리</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectController.h">
-      <Filter>오브젝트</Filter>
-    </ClInclude>
-    <ClInclude Include="Inventory.h">
-      <Filter>인벤토리</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>플레이어</Filter>
     </ClInclude>
-    <ClInclude Include="Deck.h">
-      <Filter>오브젝트</Filter>
+    <ClInclude Include="Battle.h">
+      <Filter>배틀</Filter>
     </ClInclude>
     <ClInclude Include="Menu.h">
-      <Filter>소스 파일</Filter>
+      <Filter>메뉴</Filter>
     </ClInclude>
+    <ClInclude Include="Network.h">
+      <Filter>네트워크</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectControll.h">
+      <Filter>오브젝트</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

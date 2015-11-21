@@ -8,6 +8,10 @@ private:
 	HBITMAP	hBitmap;
 	BITMAP bit;
 	//
+	HDC	mDC2;
+	HBITMAP	hBitmap2;
+	BITMAP bit2;
+
 	int width, height;
 
 	int num[10][2];
@@ -20,14 +24,19 @@ public:
 	void set(){
 
 		// 이미지 시트 세팅
-		hBitmap = (HBITMAP)LoadImage(NULL, "Number.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		hBitmap = (HBITMAP)LoadImage(NULL, "./GameUI/Whitenum.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 		mDC = CreateCompatibleDC(GetDC(GetFocus()));
 		GetObject(hBitmap, sizeof(bit), &bit);
 		SelectObject(mDC, hBitmap);
 
+		hBitmap2 = (HBITMAP)LoadImage(NULL, "./GameUI/Rednum.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		mDC2 = CreateCompatibleDC(GetDC(GetFocus()));
+		GetObject(hBitmap2, sizeof(bit2), &bit2);
+		SelectObject(mDC2, hBitmap2);
+
 		// 위치 메핑
-		width = 64;
-		height = 78;
+		width = 40;
+		height = 57;
 
 
 		num[0][posX] = width * 4;
@@ -50,7 +59,7 @@ public:
 
 	}
 
-	void print(const HDC& dc, int x, int y, int inputnum = 1){
+	void Whiteprint(const HDC& dc, int x, int y, int inputnum = 1){
 
 		int nX = x, nY = y;
 
@@ -58,13 +67,33 @@ public:
 
 
 		if (arr[0]) {
-			TransparentBlt(dc, nX, nY, width, height, mDC, num[arr[0]][posX], num[arr[0]][posY], width, height, RGB(255, 255, 255));
+			TransparentBlt(dc, nX, nY, width / 3, height / 3, mDC, num[arr[0]][posX], num[arr[0]][posY], width, height, RGB(255, 0, 255));
 
 			nX += width;
 		}
 
 
-		TransparentBlt(dc, nX, nY, width, height, mDC, num[arr[1]][posX], num[arr[1]][posY], width, height, RGB(255, 255, 255));
+		TransparentBlt(dc, nX, nY, width / 3, height / 3, mDC, num[arr[1]][posX], num[arr[1]][posY], width, height, RGB(255, 0, 255));
+
+		//nX += width;
+
+	}
+
+	void Redprint(const HDC& dc, int x, int y, int inputnum = 1){
+
+		int nX = x, nY = y;
+
+		int arr[2] = { inputnum / 10, inputnum % 10 };
+
+
+		if (arr[0]) {
+			TransparentBlt(dc, nX, nY, width, height, mDC2, num[arr[0]][posX], num[arr[0]][posY], width, height, RGB(255, 0, 255));
+
+			nX += width;
+		}
+
+
+		TransparentBlt(dc, nX, nY, width, height, mDC2, num[arr[1]][posX], num[arr[1]][posY], width, height, RGB(255, 0, 255));
 
 		nX += width;
 
