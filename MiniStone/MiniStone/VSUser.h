@@ -18,13 +18,13 @@ private:
 
 public:
 	void Initialize(){
-		Network::getInstance()->init();
 		board.init();
 		P1.init();
 		E1.init();
 		Turn = true;
 		P1.setTheOther(&E1);
 		E1.setTheOther(&P1);
+		Network::getInstance()->init();
 		setMode();
 
 	}

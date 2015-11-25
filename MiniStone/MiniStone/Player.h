@@ -8,6 +8,8 @@
 extern HWND g_hWnd;
 extern HINSTANCE g_hInstance;
 extern pass	E_recv;
+extern bool		Myturn;
+extern bool		E_turn;
 
 #define DECKMAX 30
 #define CARDMAX 30
@@ -77,28 +79,28 @@ private:
 	FILE		*f;
 	int			hangnum;
 	int			FSelect;
-	static bool		Myturn;
-	static bool		E_turn;
+
 
 	RECT		PlayerRect;
 	RECT		EnemyRect;
+	bool firstDraw;
+	bool efirstDraw;
+	DWORD _tick1, _now1;
+
+	bool turnStart;
+	bool arrowflag;
+	int atkparamater1, atkparamater2;
+	int plusnum;
+	int k;
+	DWORD E_Tick;
+	DWORD shortTick;
+	bool  E_trunStart;
 
 public:
 	Player();
 	~Player();
 
-	bool firstDraw = true;
-	bool efirstDraw = true;
-	DWORD _tick1, _now1;
 
-	bool turnStart = true;
-	bool arrowflag = false;
-	int atkparamater1 = -1, atkparamater2 = -1;
-	int plusnum = 0;
-	int k = 0;
-	DWORD E_Tick = 0;
-	DWORD shortTick = 0;
-	bool  E_trunStart = false;
 
 
 	void setTheOther(Player* _other){
@@ -244,6 +246,19 @@ public:
 		E_recv.E_Hand = -1;
 		P_pass.cTurn = false;
 		E_recv.cTurn = false;
+
+		firstDraw = true;
+		efirstDraw = true;
+		_tick1, _now1;
+
+		turnStart = true;
+		arrowflag = false;
+		atkparamater1 = -1, atkparamater2 = -1;
+		plusnum = 0;
+		k = 0;
+		E_Tick = 0;
+		shortTick = 0;
+		E_trunStart = false;
 	}
 
 	void startDeck(int firstcarddeck){
@@ -918,17 +933,16 @@ public:
 		if (!E_trunStart && E_turn == false){
 			E_trunStart = true;
 
-			E_Tick = GetTickCount();
 			shortTick = GetTickCount();
 		}
 
 
-		if (E_recv.cTurn == true){
+		if (GetTickCount() - E_Tick < 500){
 			E_Tick = GetTickCount();
 
-			int mana = E_SelectCard();
-			E_trunStart = false;
-			PMana -= mana;
+	//		int mana = E_SelectCard();
+//			E_trunStart = false;
+	//		PMana -= mana;
 
 			E_turn = true; // ео а╬╥А
 			k1 = 0;
@@ -936,7 +950,7 @@ public:
 		}
 
 		else {
-			if (GetTickCount() - shortTick > 500){
+			if (GetTickCount() - shortTick < 500){
 				if (Cfield[k1] > -1){
 					shortTick = GetTickCount();
 
@@ -966,14 +980,22 @@ public:
 							atkparamater2 = 8;
 						}
 
-						if (k++ > 7) k = 7;
+						if (k++ > 7){
+							k = 7;
+							E_Tick = GetTickCount();
+						}
 						shortTick = GetTickCount();
 
 
 					}
 				}
+
+			}
+			else if ((E_recv.cTurn == true)){
+				E_Tick = GetTickCount();
 			}
 		}
+
 	}
 
 	void Net_changeTurn(){
@@ -1052,6 +1074,8 @@ public:
 				{
 					if (PtInRect(&TurnButtonON.Source, pos))
 						Net_changeTurn();
+
+					E_recv.cTurn = false;
 				}
 			}
 			//			TurnFlag(pos);

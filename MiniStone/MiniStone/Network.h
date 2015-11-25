@@ -6,7 +6,7 @@
 static int retval;
 static int sock;
 extern pass E_recv;
-//extern bool Myturn;
+extern bool Myturn;
 
 class Network{
 private:
@@ -65,10 +65,10 @@ public:
 		retval = recv(sock, buff, 1024, 0);
 		printf("%s", buff);
 
-		//if (strcmp("0", buff))// 0 이 먼저 들어오는 놈 , 1이 나중에 들어오는 놈. buff strcmpy
-		//	Myturn = false;
-		//else if (strcmp("1", buff))
-		//	Myturn = true;
+		if (!strcmp("0\n", buff))// 0 이 먼저 들어오는 놈 , 1이 나중에 들어오는 놈. buff strcmpy
+			Myturn = false;
+		else if (!strcmp("1\n", buff))
+			Myturn = true;
 
 		// 가득 찼다고 메시지가 왔다면
 		if (!strcmp("FULL\n", buff))
@@ -127,13 +127,13 @@ public:
 		{
 			Sleep(10);	// CPU 점유률 100% 방지용
 
-			// 서버에서 주는 메시지를 실pass recvpss;
+			// 서버에서 주는 메시지를 실pass recvpss;	
 			int ret_thread = 65535;
 			char buff_thread[1024] = "";
 			//	ret_thread = recv(s, buff_thread, sizeof(buff_thread), 0);
 
-			ret_thread = recv(sock, (char*)&recvpss, sizeof(recvpss), 0);
-
+			ret_thread = recv(sock, (char*)&recvpss, sizeof(pass), 0);
+			
 			// 서버에서 받는 작업을 한 결과 비정상일 때 탈출
 			if (ret_thread == INVALID_SOCKET || ret_thread == SOCKET_ERROR)
 				break;
