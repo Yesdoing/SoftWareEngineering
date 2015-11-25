@@ -3,13 +3,14 @@
 #include "GameBoard.h"
 #include "Card.h"
 #include "InputManager.h"
-#include "Player.h"
 #include "Menu.h"
 #include "ImageManager.h"
 #include "Battle.h"
+#include "VSUser.h"
 
 extern HWND g_hWnd;
 extern HINSTANCE		g_hInstance;
+extern pass E_recv;
 
 class MainFrameWork{
 private:
@@ -18,21 +19,34 @@ private:
 
 	Menu MenuIF;
 	int GameState;
-	Player P1;
-//	CardResource C1;
-//	CObjectManager O1;
 	GameBoard board;
-//	CInventory Inven1;
-//	Deck	D1;
 	Battle	battle1;
-
+	VSUser	v1;
 
 
 	bool Inven;
 
+	bool GameInit;
+	bool GameInit2;
+	BOOL sound;
+	MCI_OPEN_PARMS mciOpen;
+	int dwID;
+	MCI_PLAY_PARMS mciPlay;
 
 public:
 	void Initialize(){
+		///////////배경음 초기화////////////
+		mciOpen.lpstrDeviceType = "mpegvideo";  // mpegvideo : mp3, waveaudio : wav, avivideo : avi
+		mciOpen.lpstrElementName = "d:\\bgm.wav"; // 파일이름
+		mciSendCommand(0, MCI_OPEN, MCI_OPEN_ELEMENT | MCI_OPEN_TYPE | MCI_OPEN_TYPE, (DWORD)(LPVOID)&mciOpen);
+		/////////////////////////
+
+
+		// 재생/////////////
+		dwID = mciOpen.wDeviceID;
+		mciSendCommand(dwID, MCI_PLAY, MCI_DGV_PLAY_REPEAT, (DWORD)(LPVOID)&mciPlay);
+		//////////////////
+
 		// 랜더링//
 		dc = GetDC(g_hWnd);
 		backDC = CreateCompatibleDC(dc);
@@ -46,60 +60,94 @@ public:
 		backBuf = CreateCompatibleBitmap(dc, 1920, 1000);
 		(HBITMAP)SelectObject(backDC, backBuf);
 		*/
+
 		GameState = 0;
 		MenuIF.init();
-		battle1.Initialize();
-//		D1.init();
-//		board.init();
-//		C1.init();
-//		O1.init();
-//		P1.init();
-	//	Inven1.Init();
+		GameInit = true;
+		GameInit2 = true;
 		//초기화
-		
+		CNum::getInstance()->set();
 	}
 
 	void update(){
 		DWORD _key = InputManager::getInstance()->getKeyState();
 		POINT pos = InputManager::getInstance()->getMousePos();
 
-//		board.update();
-	//	GameState = MenuIF.GetState();
-		//업데이트? Progress??
-//		P1.update(pos);
 		if (GameState == 0){
 			GameState = MenuIF.update(pos);
-
-			battle1.setMode(GameState);
-
 		}
-		else if (GameState == 1)
+		else if (GameState == 1){
 			battle1.update();
-		else if (GameState == 2)
-			;
+
+			if (battle1.relesae() == -1){
+				GameState = 0;
+				GameInit = true;
+			}
+		}
+
+		else if (GameState == 2){
+			v1.update();
+		}
+
 	}
 
 	void Progress(){
 		InputManager::getInstance()->updateMousePos();
 		InputManager::getInstance()->updateKeyState();
 		
+
+
 		update();
+		if (GameState == 1){
+			if (GameInit)
+			{
+				GameInit = false;
+				battle1.Initialize();
+			}
+		}
+		else if (GameState == 2){
+			if (GameInit2)
+			{
+				GameInit2 = false;
+				v1.Initialize();
+			}
+		}
+
 		render();
-	
+
+
 	
 	
 	}
 
 	void render(){
-//		board.render(backDC);
-//		P1.draw(backDC);
-//		P1.ExImage(backDC);
 		if(GameState == 0)
 			MenuIF.render(backDC);
-		else if(GameState == 1)
+		else if (GameState == 1){
+			////////////플레이 사운드//////////////
+			if (sound == TRUE){
+				mciSendCommandW(dwID, MCI_CLOSE, 0, NULL);
+
+				mciOpen.lpstrElementName = "d:\\bgm2.wav"; // 파일이름
+				mciSendCommand(0, MCI_OPEN, MCI_OPEN_ELEMENT | MCI_OPEN_TYPE | MCI_OPEN_TYPE, (DWORD)(LPVOID)&mciOpen);
+
+				// 재생
+				//	dwID = mciOpen.wDeviceID;
+				mciSendCommand(dwID, MCI_PLAY, MCI_DGV_PLAY_REPEAT, (DWORD)(LPVOID)&mciPlay);
+
+				//PlaySound(TEXT("D:\\bgm2.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_LOOP | SND_NODEFAULT);
+				sound = FALSE;
+
+			}
+			////////////////////////////
+
 			battle1.render(backDC);
-		else if (GameState == 2)
-			battle1.render(backDC);
+		}
+
+		else if (GameState == 2){
+			v1.render(backDC);
+		}
+
 		BitBlt(dc, 0, 0, 1920, 1000, backDC, 0, 0, SRCCOPY);
 
 

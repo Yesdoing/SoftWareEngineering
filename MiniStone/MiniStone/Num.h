@@ -69,13 +69,13 @@ public:
 		if (arr[0]) {
 			TransparentBlt(dc, nX, nY, width / 3, height / 3, mDC, num[arr[0]][posX], num[arr[0]][posY], width, height, RGB(255, 0, 255));
 
-			nX += width;
+			nX += width / 4;
 		}
 
 
-		TransparentBlt(dc, nX, nY, width / 3, height / 3, mDC, num[arr[1]][posX], num[arr[1]][posY], width, height, RGB(255, 0, 255));
+		TransparentBlt(dc, nX, nY-1, width / 3, height / 3, mDC, num[arr[1]][posX], num[arr[1]][posY], width, height, RGB(255, 0, 255));
 
-		//nX += width;
+
 
 	}
 
@@ -95,7 +95,7 @@ public:
 
 		TransparentBlt(dc, nX, nY, width, height, mDC2, num[arr[1]][posX], num[arr[1]][posY], width, height, RGB(255, 0, 255));
 
-		nX += width;
+		//nX += width;
 
 	}
 

@@ -1,12 +1,13 @@
 #pragma once
 #include "preCompile.h"
 #include "InputManager.h"
-//#include "ObjectManager.h"
 #include "Card.h"
 #include "ImageDB.h"
+#include "Network.h"
 
 extern HWND g_hWnd;
 extern HINSTANCE g_hInstance;
+extern pass	E_recv;
 
 #define DECKMAX 30
 #define CARDMAX 30
@@ -20,19 +21,25 @@ private:
 		int PLife; //현재 체력 
 		int Handnum; //내핸드 수
 		int Drawnum; //드로우 수
+
+		static int		atk_index;
+		static int		dmg_index;
+		static int		atk_num;
+
+
 		RECT	Inven[30];
-		SImageDB PlayerImg; //플레이어 이미지
 		SImageDB FirstDrawImg;
 		Card ExDrawImg;
 		
 
 		int		Cfield[8];
 		RECT	Field[8];
+		RECT	E_Field[8];
+
+		Player* other;
 
 		//////////////////////// 적 플레이어에 대한 정보
 		
-	//	RECT	EnemyCfield[8];
-	//	int		EnemyCard[8];
 		int		EnemyHandCount;
 
 		/////////////////////////
@@ -45,15 +52,23 @@ private:
 		bool flagOnce;
 		int max;
 		int min;
+		int temp;
 
+		SImageDB	AtkPointer1;
+		SImageDB	AtkPointer2;
 		SImageDB	TurnButtonON;
 		SImageDB	TurnButtonOFF;
 		SImageDB	myTurnimg;
 		POINT		ButtonPos;
+		SImageDB	Lifeimg;
+		SImageDB	Manaimg;
+		SImageDB	AttackEffet;
+
+		Card		CHand[30];
+		Card		Cdeck[30];
+		struct pass	P_pass;
 
 private:
-	Card		CHand[30];
-	Card		Cdeck[30];
 	char		Cnum[4];
 	char		Cname[10];
 	int			CAttack;
@@ -65,13 +80,38 @@ private:
 	static bool		Myturn;
 	static bool		E_turn;
 
+	RECT		PlayerRect;
+	RECT		EnemyRect;
 
 public:
 	Player();
 	~Player();
 
+	bool firstDraw = true;
+	bool efirstDraw = true;
+	DWORD _tick1, _now1;
+
+	bool turnStart = true;
+	bool arrowflag = false;
+	int atkparamater1 = -1, atkparamater2 = -1;
+	int plusnum = 0;
+	int k = 0;
+	DWORD E_Tick = 0;
+	DWORD shortTick = 0;
+	bool  E_trunStart = false;
+
+
+	void setTheOther(Player* _other){
+
+		 
+		other = _other;
+	
+
+	}
+
 	void init(){
 		int i = 0;
+		temp = -1;
 		f = fopen("card.dat", "rb");
 		while (fscanf(f, "%s %s %d %d %d", &Cnum, &Cname, &CAttack, &CLife, &CMana) != EOF){
 			Cdeck[i].init(Cnum, Cname, CAttack, CLife, CMana);
@@ -84,10 +124,10 @@ public:
 		}
 
 		FSelect = 0;
-		MaxMana = 10;
+		MaxMana = 1;
 		PMana = 0;
 		MaxLife = 30;
-		PLife = MaxMana;
+		PLife = MaxLife;
 
 		for (int i = 0; i < 30; i++){
 			CHand[i].init();
@@ -103,6 +143,11 @@ public:
 			Field[i].top = 370;
 			Field[i].right = 221 + (91 * i);
 			Field[i].bottom = 480;
+
+			E_Field[i].left = 130 + (91 * i);
+			E_Field[i].top = 220;
+			E_Field[i].right = 221 + (91 * i);
+			E_Field[i].bottom = 330;
 		}
 
 		Handnum = 0;
@@ -117,7 +162,7 @@ public:
 		hang = false;
 		hangnum = -1;
 
-		Myturn = true;
+		Myturn = false;
 
 		HDC hdc = GetDC(g_hWnd);
 		TurnButtonON.hBit = (HBITMAP)LoadImage(NULL, "./GameUI/myturn2.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
@@ -148,14 +193,57 @@ public:
 		GetObject(myTurnimg.hBit, sizeof(myTurnimg.Bit), &myTurnimg.Bit);
 		SelectObject(myTurnimg.mDC, myTurnimg.hBit);
 
+		AtkPointer1.hBit = (HBITMAP)LoadImage(NULL, "./GameUI/arrow1.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		AtkPointer1.mDC = CreateCompatibleDC(GetDC(GetFocus()));
+		GetObject(AtkPointer1.hBit, sizeof(AtkPointer1.Bit), &AtkPointer1.Bit);
+		SelectObject(AtkPointer1.mDC, AtkPointer1.hBit);
 
 
-		// 카드 받기 
-	
+		AtkPointer2.hBit = (HBITMAP)LoadImage(NULL, "./GameUI/arrow2.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		AtkPointer2.mDC = CreateCompatibleDC(GetDC(GetFocus()));
+		GetObject(AtkPointer2.hBit, sizeof(AtkPointer2.Bit), &AtkPointer2.Bit);
+		SelectObject(AtkPointer2.mDC, AtkPointer2.hBit);
 
-		
-	
+		Lifeimg.hBit = (HBITMAP)LoadImage(NULL, "./GameUI/life.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		Lifeimg.mDC = CreateCompatibleDC(GetDC(GetFocus()));
+		GetObject(Lifeimg.hBit, sizeof(Lifeimg.Bit), &Lifeimg.Bit);
+		SelectObject(Lifeimg.mDC, Lifeimg.hBit);
 
+		Manaimg.hBit = (HBITMAP)LoadImage(NULL, "./GameUI/kristal.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		Manaimg.mDC = CreateCompatibleDC(GetDC(GetFocus()));
+		GetObject(Manaimg.hBit, sizeof(Manaimg.Bit), &Manaimg.Bit);
+		SelectObject(Manaimg.mDC, Manaimg.hBit);
+
+		AttackEffet.hBit = (HBITMAP)LoadImage(NULL, "./GameUI/damage.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		AttackEffet.mDC = CreateCompatibleDC(GetDC(GetFocus()));
+		GetObject(AttackEffet.hBit, sizeof(AttackEffet.Bit), &AttackEffet.Bit);
+		SelectObject(AttackEffet.mDC, AttackEffet.hBit);
+
+
+		EnemyRect.left = 475;
+		EnemyRect.top = 119;
+		EnemyRect.right = 549;
+		EnemyRect.bottom = 183;
+
+		PlayerRect.left = 478;
+		PlayerRect.top = 552;
+		PlayerRect.right = 554;
+		PlayerRect.bottom = 629;
+
+		for (int i = 0; i < 8; i++){
+			P_pass.Cfield[i] = -1;
+			E_recv.Cfield[i] = -1;
+			
+			for (int j = 0; j < 2; j++){
+				P_pass.Attackflag[i][j] = -1;
+				E_recv.Attackflag[i][j] = -1;
+			}
+		}
+
+		P_pass.E_Hand = -1;
+		E_recv.E_Hand = -1;
+		P_pass.cTurn = false;
+		E_recv.cTurn = false;
 	}
 
 	void startDeck(int firstcarddeck){
@@ -179,7 +267,7 @@ public:
 	}
 
 	void getOneCard(){
-
+		srand((unsigned)time(NULL));
 		int temp = rand() % CARDMAX;
 
 		for (int i = 0; i <= Drawnum; ++i){
@@ -217,8 +305,7 @@ public:
 
 
 
-	bool firstDraw = true;
-	DWORD _tick1, _now1;
+
 
 
 	void draw(HDC& dc){
@@ -230,27 +317,32 @@ public:
 		}
 
 		if (Myturn && turnStart){
+			PMana = MaxMana;
 			turnStart = false;
 			getOneCard();
 
 			CHand[Drawnum].SetCardPosition(Inven[Drawnum].left, Inven[Drawnum].top);
 
-			ExDrawImg = Cdeck[Drawnum];
+			ExDrawImg = CHand[Drawnum];
 			ExDrawImg.SetCardPosition(850, 413);
 			ExDrawImg.SetCardSize(3);
 
 
 			_tick1 = GetTickCount();
 		}
-
-
-		//CHand[Drawnum] = Cdeck[Drawnum];
-	//	CHand[Drawnum].SetCardPosition(Inven[Drawnum].left, Inven[Drawnum].top);
 	
 		////////////////// 카드 미리보기 
 		_now1 = GetTickCount();
 		if (_now1 - _tick1 < value)
 		{
+			TransparentBlt(dc, 260, 260, (myTurnimg.Bit.bmWidth),
+				(myTurnimg.Bit.bmHeight),
+				myTurnimg.mDC,
+				0,
+				0,
+				myTurnimg.Bit.bmWidth,
+				myTurnimg.Bit.bmHeight,
+				RGB(255, 0, 255));
 			ExDrawImg.Handrender(dc);
 		}
 
@@ -265,9 +357,23 @@ public:
 			CHand[hangnum].cardSelectDraw(dc, pos);
 		}
 
-		turnButton(dc);
+
 
 		renderfield(dc);
+		turnButton(dc);
+
+		arrowRender(dc);
+
+		if (atkparamater1 != -1 && atkparamater2 != -1){
+			attackreder(dc, atkparamater1, atkparamater2);
+
+			if (Cdeck[atkparamater1].atkMoveFlag == 0)
+			{
+				atkparamater1 = -1;
+				atkparamater2 = -1;
+			}
+		}
+
 	}
 
 
@@ -276,7 +382,7 @@ public:
 	void ExImage(HDC& dc){
 		POINT pos = InputManager::getInstance()->getMousePos();
 		DWORD key = InputManager::getInstance()->getKeyState();
-		for (int i = 0; i < Drawnum; i++){
+		for (int i = 0; i <= Drawnum; i++){
 			if (PtInRect(&Inven[i], pos)){
 				CHand[i].Ex_Handrender(dc);
 			}
@@ -289,6 +395,7 @@ public:
 
 	void update(POINT pos){
 		DWORD key = InputManager::getInstance()->getKeyState();
+		FieldAttack();
 		if (Myturn){
 			if (key & MYKEY_FLAG::MK_LCLK){
 				RECT rc;
@@ -298,8 +405,11 @@ public:
 				{
 					hangnum = (pos.x - 70) / 20;
 				}
-				else if(hangnum != -1){
-					addMyfield(CHand[hangnum].getCindex());
+				else if ((hangnum != -1) && (CHand[hangnum].CMana <= PMana)){
+					if (CHand[hangnum].getHandImg().mDC != 0)
+						addMyfield(CHand[hangnum].getCindex());
+					CHand[hangnum].HandRelease();
+					PMana -= CHand[hangnum].CMana;
 					hangnum = -1;
 				}
 			}
@@ -310,6 +420,7 @@ public:
 			TurnFlag(pos);
 		}
 	}
+
 
 	void addMyfield(int _index){
 		for (int i = 0; i < 8; i++){
@@ -333,14 +444,7 @@ public:
 
 			if (flag1)
 			{
-				TransparentBlt(dc, 200, 200, (myTurnimg.Bit.bmWidth),
-					(myTurnimg.Bit.bmHeight),
-					myTurnimg.mDC,
-					0,
-					0,
-					myTurnimg.Bit.bmWidth,
-					myTurnimg.Bit.bmHeight,
-					RGB(255, 0, 255));
+				
 			}
 
 			TransparentBlt(dc, ButtonPos.x, ButtonPos.y, (TurnButtonON.Bit.bmWidth),
@@ -383,11 +487,22 @@ public:
 			}
 		}
 
+		for (int i = 0; i < 8; i++){
+			if (Cfield[i] > -1)
+				Cdeck[Cfield[i]].atkflag = true;
 
+			P_pass.Cfield[i] = Cfield[i];
+		}
 
+		if (++MaxMana > 10)
+			MaxMana = 10;
+
+		P_pass.E_Hand = Drawnum;
+		P_pass.cTurn = false;
 
 		Myturn = !Myturn;
 		turnStart = true;
+		flag1 = true;
 	}
 
 	void TurnFlag(POINT pos){
@@ -408,82 +523,100 @@ public:
 	//Enemy용
 
 
-	bool efirstDraw = true;
-	bool turnStart = true;
+
 
 	void E_draw(HDC& dc){
-		/*
-		카드가 덱에서 핸드로 들어오는 과정. 플레이어의 정반대 위치와 카드이미지는 뒷면이 출력되야한다.
-		일단 3장먼저올리고 for문으로 돌리기
-		올라 가는것을 확인한 후에 마나체크 구현
-		*/
+		if (efirstDraw){
+			efirstDraw = false;
+			for (int i = 0; i <= Drawnum; ++i)
+				CHand[i].SetCardPosition(Inven[i].left, 0);
+		}
 
 		if (E_turn){
 			changeTurn();
 			E_turn = false;
 		}
 
-		if (efirstDraw){
-			efirstDraw = false;
 
-			
-			CMana = 0;
-			for (int i = 0; i <= Drawnum; ++i)
-				CHand[i].SetCardPosition(Inven[i].left, 20);
-
-		}
 
 		if (turnStart){
+			PMana = MaxMana;
 			turnStart = false;
 			getOneCard();
 			
-			if( ++CMana > 10 )
-				CMana = 10;
 
-			CHand[Drawnum].SetCardPosition(Inven[Drawnum].left, 20);
+			CHand[Drawnum].SetCardPosition(Inven[Drawnum].left, 0);
+
+	//		attackreder(dc);
+
 
 		}
 			
 		for (int k = 0; k <= Drawnum; k++)
 			CHand[k].Back_Handrender(dc);
 
-		for (int i = 0; i < 8 && Cfield[i] > -1; i++)
-			Cdeck[Cfield[i]].Fieldrender(dc, Field[i].left, Field[i].top-150);
+	
+
+
+		for (int i = 0; i < 8; i++)
+		{
+			if (Cfield[i] > -1)
+				Cdeck[Cfield[i]].Fieldrender(dc, E_Field[i].left, E_Field[i].top);
+		}
+
+		if (atkparamater1 != -1 && atkparamater2 != -1){
+			attackreder(dc, atkparamater1, atkparamater2);
+
+			if (Cdeck[atkparamater1].atkMoveFlag == 0)
+			{
+				atkparamater1 = -1;
+				atkparamater2 = -1;
+			}
+		}
+
+
+		
 	}
 
 
 
-	
-	DWORD E_Tick = 0;
-	bool  E_trunStart = false;
 	void E_update(){
 		if (Myturn)
 			return ;
 
-		if (!E_trunStart && E_turn == false){
+		if ((!E_trunStart) && (E_turn == false)){
 			E_trunStart = true;
 
 			E_Tick = GetTickCount();
+			shortTick = GetTickCount();
 		}
 
 
-		if (GetTickCount() - E_Tick > 2000){
-
+		if (GetTickCount() - E_Tick > 5000){
 			E_Tick = GetTickCount();
 
 			int mana = E_SelectCard();
 			E_trunStart = false;
-		
-			CMana -= mana;
+			PMana -= mana;
 
+			E_turn = true; // 턴 종료
+			k = 0;
 
-			if (0==CMana){ // 마나 체크 
-				// 마나 다 썼으면
+		}
+		else {
+			if (GetTickCount() - shortTick > 500){
+				if (Cfield[k] > -1){
+					shortTick = GetTickCount();
+					Cdeck[Cfield[k]].SetMoveFlag(1, PlayerRect.left, PlayerRect.top, 5, NULL);
+					other->PLife -= Cdeck[Cfield[k]].getCardAttack();
 
-				E_turn = true; // 턴 종료
+					atkparamater1 = Cfield[k];
+					atkparamater2 = 8;
+
+					if (k++ > 7) k = 7;
+					shortTick = GetTickCount();
+				}
 			}
-
-
 		}
 		
 	}
@@ -497,33 +630,431 @@ public:
 				continue;
 			}
 		}
-
-		addMyfield(CHand[temp].getCindex());
-		Drawnum--;
-		CHand[temp].HandRelease();
-		return 1; // getMAna\ 추가 필요
+		if (CHand[temp].CMana <= PMana){
+			addMyfield(CHand[temp].getCindex());
+			Drawnum--;
+			CHand[temp].HandRelease();
+			return CHand[temp].CMana; // getMAna\ 추가 필요
+		}
+		else return 0;
 	}
 
-	void E_SetTarget(){
-	}
 
 	void renderfield(HDC& dc){
-		for (int i = 0; i < 8 && Cfield[i] > -1 ; i++)
-			Cdeck[Cfield[i]].Fieldrender(dc, Field[i].left, Field[i].top);
-	
+		for (int i = 0; i < 8; i++)
+		{
+			if (Cfield[i] > -1)
+				Cdeck[Cfield[i]].Fieldrender(dc, Field[i].left, Field[i].top);
+		}
 	}
 
 
 	void FieldAttack(){
+		if (!Myturn || hangnum != -1)
+			return;
+
+		
+			DWORD key = InputManager::getInstance()->getKeyState();
+			POINT pos = InputManager::getInstance()->getMousePos();
+
+			RECT remp;
+			if (key & MYKEY_FLAG::MK_LCLK)
+			{
+				int index = (pos.x - 130) / 91;
+
+				if (PtInRect(&Field[index], pos))
+				{
+					if (Cfield[index] > -1){
+						if (Cdeck[Cfield[index]].atkflag)
+							arrowflag = !arrowflag;
+
+						temp = index;
+					}
+					
+				}
+
+
+				if (arrowflag)
+				{
+					AtkPointer1.Source.left = pos.x;
+					AtkPointer1.Source.top = pos.y;
+					AtkPointer1.Source.right = pos.x + 108;
+					AtkPointer1.Source.bottom = pos.y + 107;
+					if (other->Cfield[index] > -1)
+					{
+						if (IntersectRect(&remp, &AtkPointer1.Source, &E_Field[index]))
+						{
+							// 1이면 공격
+							Cdeck[Cfield[temp]].SetMoveFlag(1, E_Field[index].left, E_Field[index].top, 5, NULL);
+
+							atk_index = temp;
+							dmg_index = index;
+							atk_num = Cdeck[Cfield[temp]].getCardAttack();
+							arrowflag = false;
+
+
+							other->Cdeck[other->Cfield[index]].CLife -= Cdeck[Cfield[temp]].getCardAttack();
+							other->Cfield[index] = other->Cdeck[other->Cfield[index]].CheckDeathCard(other->Cfield[index]);
+
+							Cdeck[Cfield[temp]].CLife -= other->Cdeck[other->Cfield[index]].getCardAttack();
+							Cfield[temp] = Cdeck[Cfield[temp]].CheckDeathCard(Cfield[temp]);
+
+							atkparamater1 = Cfield[temp];
+							atkparamater2 = other->Cfield[index];
+
+							P_pass.Attackflag[plusnum][0] = temp;
+							P_pass.Attackflag[plusnum][1] = index;
+							if (plusnum++ > 8) plusnum = 7;
+						}
+					}
+						if (IntersectRect(&remp, &AtkPointer1.Source, &EnemyRect))
+						{
+							Cdeck[Cfield[temp]].SetMoveFlag(1, EnemyRect.left, EnemyRect.top, 5, NULL);
+							other->PLife -= Cdeck[Cfield[temp]].getCardAttack();
+
+							atkparamater1 = Cfield[temp];
+							atkparamater2 = 9;
+
+							P_pass.Attackflag[plusnum][0] = temp;
+							P_pass.Attackflag[plusnum][1] = 8;
+							if (plusnum++ > 8) plusnum = 7;
+
+							arrowflag = false;
+						}
+				}
+			}
+			else if (key & MYKEY_FLAG::MK_RCLK){
+				arrowflag = false;
+			}
+		
+	}
+
+	void arrowRender(HDC& dc){
+		POINT pos = InputManager::getInstance()->getMousePos();
+		if (arrowflag)
+		{
+			AtkPointer1.Source.left = pos.x;
+			AtkPointer1.Source.top = pos.y;
+			AtkPointer1.Source.right = pos.x + 108;
+			AtkPointer1.Source.bottom = pos.y + 107;
+
+			TransparentBlt(dc, pos.x-50, pos.y-50, (AtkPointer1.Bit.bmWidth),
+			(AtkPointer1.Bit.bmHeight),
+			AtkPointer1.mDC,
+			0,
+			0,
+			AtkPointer1.Bit.bmWidth,
+			AtkPointer1.Bit.bmHeight,
+			RGB(255, 0, 255));
+		}
+	}
+
+	void ManaRender(HDC& dc){
+		CNum::getInstance()->Whiteprint(dc, 700, 704, PMana);
+		CNum::getInstance()->Whiteprint(dc, 735, 704, MaxMana);
+		for (int i = 0; i < PMana; i++)
+		{
+			TransparentBlt(dc, 763 + (i * 23), 699, (Manaimg.Bit.bmWidth),
+				(Manaimg.Bit.bmHeight),
+				Manaimg.mDC,
+				0,
+				0,
+				Manaimg.Bit.bmWidth,
+				Manaimg.Bit.bmHeight,
+				RGB(255, 0, 255));
+		}
+
+		TransparentBlt(dc, PlayerRect.right, PlayerRect.bottom, (Lifeimg.Bit.bmWidth),
+			(Lifeimg.Bit.bmHeight),
+			Lifeimg.mDC,
+			0,
+			0,
+			Lifeimg.Bit.bmWidth,
+			Lifeimg.Bit.bmHeight,
+			RGB(255, 0, 255));
+		CNum::getInstance()->Whiteprint(dc, PlayerRect.right, PlayerRect.bottom+10, PLife);
+	}
+
+	void E_ManaRender(HDC& dc){
+		CNum::getInstance()->Whiteprint(dc, 678, 40, PMana);
+		CNum::getInstance()->Whiteprint(dc, 705, 40, MaxMana);
+
+		TransparentBlt(dc, EnemyRect.right, EnemyRect.bottom, (Lifeimg.Bit.bmWidth),
+			(Lifeimg.Bit.bmHeight),
+			Lifeimg.mDC,
+			0,
+			0,
+			Lifeimg.Bit.bmWidth,
+			Lifeimg.Bit.bmHeight,
+			RGB(255, 0, 255));
+		CNum::getInstance()->Whiteprint(dc, EnemyRect.right, EnemyRect.bottom+10, PLife);
+	}
+
+	void attackreder(HDC& dc, int _index, int E_index){
+		if (_index == 8 || E_index == 8){
+			TransparentBlt(dc, PlayerRect.left + 10, PlayerRect.top + 10, (AttackEffet.Bit.bmWidth),
+				(AttackEffet.Bit.bmHeight),
+				AttackEffet.mDC,
+				0,
+				0,
+				AttackEffet.Bit.bmWidth,
+				AttackEffet.Bit.bmHeight,
+				RGB(255, 0, 255));
+
+			CNum::getInstance()->Redprint(dc, PlayerRect.left+60, PlayerRect.top + 50, Cdeck[_index].getCardAttack());
+		}
+		else if (E_index == 9){
+			TransparentBlt(dc, EnemyRect.left + 10, EnemyRect.top + 10, (AttackEffet.Bit.bmWidth),
+				(AttackEffet.Bit.bmHeight),
+				AttackEffet.mDC,
+				0,
+				0,
+				AttackEffet.Bit.bmWidth,
+				AttackEffet.Bit.bmHeight,
+				RGB(255, 0, 255));
+
+			CNum::getInstance()->Redprint(dc, EnemyRect.left + 60, EnemyRect.top + 50, Cdeck[_index].getCardAttack());
+		}
+		else
+		{
+			TransparentBlt(dc, Cdeck[_index].getCardPosition().x + 10, Cdeck[_index].getCardPosition().y + 10, (AttackEffet.Bit.bmWidth),
+				(AttackEffet.Bit.bmHeight),
+				AttackEffet.mDC,
+				0,
+				0,
+				AttackEffet.Bit.bmWidth,
+				AttackEffet.Bit.bmHeight,
+				RGB(255, 0, 255));
+
+			CNum::getInstance()->Redprint(dc, Cdeck[_index].getCardPosition().x+60, Cdeck[_index].getCardPosition().y + 50, other->Cdeck[E_index].getCardAttack());
+
+
+			TransparentBlt(dc, other->Cdeck[E_index].getCardPosition().x + 10, other->Cdeck[E_index].getCardPosition().y + 10, (AttackEffet.Bit.bmWidth),
+				(AttackEffet.Bit.bmHeight),
+				AttackEffet.mDC,
+				0,
+				0,
+				AttackEffet.Bit.bmWidth,
+				AttackEffet.Bit.bmHeight,
+				RGB(255, 0, 255));
+
+			CNum::getInstance()->Redprint(dc, other->Cdeck[E_index].getCardPosition().x+60, other->Cdeck[E_index].getCardPosition().y + 50, Cdeck[_index].getCardAttack());
+		}
+	}
+	
+	
+
+	/*
+	void attackEffectRender(){
+		어택플래그 2일때 뜨도록 하고 적에 대한 처리는 other가져와서하는걸로...
+	}
+	*/
+
+	int checkVictory(){
+		if (PLife <= 0){
+			other->efirstDraw = true;
+			firstDraw = true;
+			return -1;
+		}
+		else if (other->PLife <= 0){
+			other->efirstDraw = true;
+			firstDraw = true;
+			return -1;
+		}
+		else return 1;
+	}
+
+	void N_draw(HDC& dc){
+		if (efirstDraw){
+			efirstDraw = false;
+			for (int i = 0; i <= Drawnum; ++i)
+				CHand[i].SetCardPosition(Inven[i].left, 0);
+		}
+
+		if (E_turn){
+			changeTurn();
+			E_turn = false;
+		}
+
+
+
+		if (turnStart){
+			PMana = MaxMana;
+			turnStart = false;
+		}
+
+		for (int k = 0; k <= Drawnum; k++)
+			CHand[k].Back_Handrender(dc);
+
+
+
+
+		for (int i = 0; i < 8; i++)
+		{
+			if (Cfield[i] > -1)
+				Cdeck[Cfield[i]].Fieldrender(dc, E_Field[i].left, E_Field[i].top);
+		}
+
+		if (atkparamater1 != -1 && atkparamater2 != -1){
+			attackreder(dc, atkparamater1, atkparamater2);
+
+			if (Cdeck[atkparamater1].atkMoveFlag == 0)
+			{
+				atkparamater1 = -1;
+				atkparamater2 = -1;
+			}
+		}
+
+
 
 	}
+	
+
+	int k1 = 0;
+	void N_update(){
+		if (Myturn)
+			return;
+
+		if (!E_trunStart && E_turn == false){
+			E_trunStart = true;
+
+			E_Tick = GetTickCount();
+			shortTick = GetTickCount();
+		}
+
+
+		if (E_recv.cTurn == true){
+			E_Tick = GetTickCount();
+
+			int mana = E_SelectCard();
+			E_trunStart = false;
+			PMana -= mana;
+
+			E_turn = true; // 턴 종료
+			k1 = 0;
+
+		}
+
+		else {
+			if (GetTickCount() - shortTick > 500){
+				if (Cfield[k1] > -1){
+					shortTick = GetTickCount();
+
+					if (E_recv.Attackflag[k1][0] > -1 && E_recv.Attackflag[k1][1] > -1) //k는 인트값 정수 초기값은 0 -> -1이면 공격신호가 없다. 
+					{
+						if (E_recv.Attackflag[k1][1] < 8) // 조건에 들어가야하는거는 카드를 공격
+						{
+							// 1이면 공격
+							Cdeck[Cfield[E_recv.Attackflag[k1][0]]].SetMoveFlag(1, Field[E_recv.Attackflag[k1][1]].left, Field[E_recv.Attackflag[k1][1]].top, 5, NULL);
+
+							other->Cdeck[other->Cfield[E_recv.Attackflag[k1][1]]].CLife -= Cdeck[Cfield[E_recv.Attackflag[k1][0]]].getCardAttack();
+							other->Cfield[Cfield[E_recv.Attackflag[k1][1]]] = other->Cdeck[other->Cfield[Cfield[E_recv.Attackflag[k1][1]]]].CheckDeathCard(other->Cfield[Cfield[E_recv.Attackflag[k][1]]]);
+
+							Cdeck[Cfield[Cfield[E_recv.Attackflag[k1][0]]]].CLife -= other->Cdeck[other->Cfield[Cfield[E_recv.Attackflag[k1][0]]]].getCardAttack();
+							Cfield[Cfield[E_recv.Attackflag[k1][1]]] = Cdeck[Cfield[Cfield[E_recv.Attackflag[k1][1]]]].CheckDeathCard(Cfield[Cfield[E_recv.Attackflag[k1][1]]]);
+
+							atkparamater1 = Cfield[Cfield[E_recv.Attackflag[k1][1]]];
+							atkparamater2 = other->Cfield[Cfield[E_recv.Attackflag[k1][0]]];
+						}
+
+						if (E_recv.Attackflag[k1][1] == 8) //조건에 들어가야하는거는 나를 공격
+						{
+							Cdeck[Cfield[Cfield[E_recv.Attackflag[k1][0]]]].SetMoveFlag(1, PlayerRect.left, PlayerRect.top, 5, NULL);
+							other->PLife -= Cdeck[Cfield[Cfield[E_recv.Attackflag[k1][0]]]].getCardAttack();
+
+							atkparamater1 = Cfield[Cfield[E_recv.Attackflag[k1][0]]];
+							atkparamater2 = 8;
+						}
+
+						if (k++ > 7) k = 7;
+						shortTick = GetTickCount();
+
+
+					}
+				}
+			}
+		}
+	}
+
+	void Net_changeTurn(){
+		for (int i = 0; i < 29; i++){
+			if (CHand[i].getHandImg().mDC == NULL)
+			{
+				for (int j = i + 1; j < 30; j++)
+				{
+					if (CHand[j].getHandImg().mDC != NULL)
+					{
+						CHand[i] = CHand[j];
+						break;
+					}
+				}
+			}
+		}
+
+		for (int i = 0; i < 8; i++){
+			if (Cfield[i] > -1)
+				Cdeck[Cfield[i]].atkflag = true;
+
+			P_pass.Cfield[i] = Cfield[i];
+		}
+
+		if (++MaxMana > 10)
+			MaxMana = 10;
+
+		P_pass.E_Hand = Drawnum;
+		P_pass.cTurn = true;
+
+		Myturn = !Myturn;
+		turnStart = true;
+		flag1 = true;
+
+		Network::getInstance()->send_message(P_pass);
+
+		for (int i = 0; i < 8; i++){
+			P_pass.Cfield[i] = -1;
+			for (int j = 0; j < 2; j++)
+			{
+				P_pass.Attackflag[i][j] = -1;
+			}
+		}
+
+		P_pass.E_Hand = -1;
+		P_pass.cTurn = false;
+	}
+
+	void Net_update(POINT pos){
+		DWORD key = InputManager::getInstance()->getKeyState();
+		FieldAttack();
+		if (Myturn){
+			if (key & MYKEY_FLAG::MK_LCLK){
+				RECT rc;
+				SetRect(&rc, Inven[0].left, Inven[0].top, Inven[29].right, Inven[0].bottom);
+
+				if (PtInRect(&rc, pos))
+				{
+					hangnum = (pos.x - 70) / 20;
+				}
+				else if ((hangnum != -1) && (CHand[hangnum].CMana <= PMana)){
+					if (CHand[hangnum].getHandImg().mDC != 0)
+						addMyfield(CHand[hangnum].getCindex());
+					CHand[hangnum].HandRelease();
+					PMana -= CHand[hangnum].CMana;
+					hangnum = -1;
+				}
+			}
+			else if (key & MYKEY_FLAG::MK_RCLK)
+			{
+				hangnum = -1;
+			}
+
+			if (Myturn){
+				if (key & MYKEY_FLAG::MK_LCLK)
+				{
+					if (PtInRect(&TurnButtonON.Source, pos))
+						Net_changeTurn();
+				}
+			}
+			//			TurnFlag(pos);
+		}
+	}
 };
-
-
-
-/*
-마나 처리를 하고
-똑같은거 안나오게 예외처리
-마나증가
-
-*/

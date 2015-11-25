@@ -21,7 +21,7 @@ class Card{
 
 protected:
 	CState		CardState;
-	SImageDB	Fieldimg;
+
 	SImageDB	handimg;
 	SImageDB	ExImage;
 	SImageDB	Lifeimg;
@@ -31,8 +31,8 @@ protected:
 	int			Cindex;
 	char		Cname[10];
 	int			CAttack;
-	int			CLife;
-	int			CMana;
+
+
 	POINT		Position;
 	int			CardSize;
 	///마우스이동을 위한 변수
@@ -43,6 +43,10 @@ protected:
 
 
 public:
+	int			CMana;
+	int			CLife;
+	SImageDB	Fieldimg;
+
 	CState getCardState(){
 		return CardState;
 	}
@@ -73,16 +77,12 @@ public:
 		Position.y = _y;
 	}
 
-	RECT getCardRect(){
-		return handimg.Source;
-	}
+	//RECT getCardRect(){
+	//	return handimg.Source;
+	//}
 
 	POINT getCardPosition(){
 		return Position;
-	}
-	char* getCardnum()
-	{
-		return Cnum;
 	}
 
 	SImageDB getHandImg()
@@ -189,8 +189,8 @@ public:
 	}
 
 	void Ex_Handrender(HDC& dc){
-		TransparentBlt(dc, Position.x - 30, Position.y - 180, (100 + ExImage.Bit.bmWidth) / CardSize - 2,
-			(100 + ExImage.Bit.bmHeight) / CardSize - 2,
+		TransparentBlt(dc, Position.x - 30, Position.y - 180, (100 + ExImage.Bit.bmWidth) / CardSize - 1,
+			(100 + ExImage.Bit.bmHeight) / CardSize - 1,
 			ExImage.mDC,
 			0,
 			0,
@@ -199,8 +199,27 @@ public:
 			RGB(255, 0, 255));
 	}
 
-	void Fieldrender(HDC& dc, int x, int y){
-		TransparentBlt(dc, x, y, (100 + Fieldimg.Bit.bmWidth) / (CardSize-1),
+	void Fieldrender(HDC& dc, int __x, int __y){
+
+		Fieldimg.Source.left = Position.x+20;
+		Fieldimg.Source.top = Position.y;
+		Fieldimg.Source.right = Position.x + 120;
+		Fieldimg.Source.bottom = Position.y + 150;
+
+		if (atkMoveFlag == 0){
+			Position.x = __x;
+			Position.y = __y;
+		}
+		else if (atkMoveFlag == 1){
+
+			AttackCard();
+		}
+		else if (atkMoveFlag == 2){
+
+			AttackCard();
+		}
+
+		TransparentBlt(dc, Position.x, Position.y, (100 + Fieldimg.Bit.bmWidth) / (CardSize-1),
 			(100 + Fieldimg.Bit.bmHeight) / (CardSize-1),
 			Fieldimg.mDC,
 			0,
@@ -209,28 +228,28 @@ public:
 			Fieldimg.Bit.bmHeight,
 			RGB(255, 0, 255));
 
-		TransparentBlt(dc, x-10, y + 67, ( 5 + Atkimg.Bit.bmWidth),
-			(5 + Atkimg.Bit.bmHeight),
-			Atkimg.mDC,
-			0,
-			0,
-			Atkimg.Bit.bmWidth,
-			Atkimg.Bit.bmHeight,
-			RGB(255, 0, 255));
-	
-		CNum::getInstance()->Whiteprint(dc, x+5, y + 80, CAttack);
+		if (CardState != STA_DEAD){
+			TransparentBlt(dc, Position.x - 10, Position.y + 67, (5 + Atkimg.Bit.bmWidth),
+				(5 + Atkimg.Bit.bmHeight),
+				Atkimg.mDC,
+				0,
+				0,
+				Atkimg.Bit.bmWidth,
+				Atkimg.Bit.bmHeight,
+				RGB(255, 0, 255));
 
-		TransparentBlt(dc, x + 55, y + 70, (Lifeimg.Bit.bmWidth),
-			( Lifeimg.Bit.bmHeight) ,
-			Lifeimg.mDC,
-			0,
-			0,
-			Lifeimg.Bit.bmWidth,
-			Lifeimg.Bit.bmHeight,
-			RGB(255, 0, 255));
-		CNum::getInstance()->Whiteprint(dc, x + 60, y + 80, CLife);
+			CNum::getInstance()->Whiteprint(dc, Position.x + 5, Position.y + 80, CAttack);
 
-		CardState = STA_FIELD;
+			TransparentBlt(dc, Position.x + 55, Position.y + 70, (Lifeimg.Bit.bmWidth),
+				(Lifeimg.Bit.bmHeight),
+				Lifeimg.mDC,
+				0,
+				0,
+				Lifeimg.Bit.bmWidth,
+				Lifeimg.Bit.bmHeight,
+				RGB(255, 0, 255));
+			CNum::getInstance()->Whiteprint(dc, Position.x + 60, Position.y + 80, CLife);
+		}
 	}
 
 	void backCard(RECT inven){
@@ -293,11 +312,14 @@ public:
 		Prevpos = pos;
 	}
 
-	void CheckDeathCard(){
+	int CheckDeathCard(int _num){
 		if (CLife < 1){
 			CardState = STA_DEAD;
 			Fieldrelease();
+			return -1;
 		}
+
+		return _num;
 	}
 
 	void Fieldrelease(){
@@ -312,6 +334,105 @@ public:
 		DeleteDC(Back_img.mDC);
 		handimg.mDC = 0;
 	}
+
+	int atkMoveFlag = 0;
+	POINT	target;
+
+	void SetMoveFlag(int _flag, int _x , int _y, int speed, Card* Tcard = NULL){
+		atkMoveFlag = _flag;
+
+		if (atkMoveFlag == 1){
+			temp = Position;
+			target.x = _x;
+			target.y = _y;
+		}
+		else if (atkMoveFlag == 2){
+			target.x = _x;
+			target.y = _y;
+			atkflag = false;
+		}
+
+		isX = false;//
+		isY = false;//
+
+		setSpeed(speed);
+	}
+
+
+
+	bool isX = false;
+	bool isY = false;
+
+	int tempX;
+	int tempY;
+			
+	void setSpeed(int  speed){
+	
+		tempX = speed;
+		tempY = speed;
+
+
+		if (Position.x >= target.x)
+			tempX *= -1;
+
+		if (Position.y >= target.y)
+			tempY *= -1;
+	}
+
+
+	bool moveCard( ){
+
+		
+		if (tempX < 0){
+			if (Position.x <= target.x)
+				isX = true;
+		}else
+			if (Position.x >= target.x)
+				isX = true;
+
+
+		if (tempY < 0){
+			if (Position.y <= target.y)
+				isY = true;
+		}
+		else
+			if (Position.y >= target.y)
+				isY = true;
+
+
+
+		
+		if( !isX )
+			Position.x += tempX;
+		if( !isY)
+		
+			Position.y += tempY;
+
+
+		if (isX && isY)
+			return true;
+		else
+			return false;
+
+	}
+	bool atkflag = true;
+
+	void AttackCard(){
+		if (moveCard()){
+			if (atkMoveFlag == 1){ // 공격상태1 세팅
+				SetMoveFlag(2, temp.x, temp.y, 2);
+			}
+			else if (atkMoveFlag == 2){
+				PlaySound(TEXT("D:\\attack.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_NODEFAULT);
+				SetMoveFlag(0, temp.x, temp.y, 0);
+			}
+		}
+
+
+	}
+
+
+
 
 	Card();
 	~Card();
