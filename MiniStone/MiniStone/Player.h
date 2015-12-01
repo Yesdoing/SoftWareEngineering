@@ -55,6 +55,7 @@ private:
 		int max;
 		int min;
 		int temp;
+		int index;
 
 		SImageDB	AtkPointer1;
 		SImageDB	AtkPointer2;
@@ -259,6 +260,7 @@ public:
 		E_Tick = 0;
 		shortTick = 0;
 		E_trunStart = false;
+		index = -1;
 	}
 
 	void startDeck(int firstcarddeck){
@@ -365,6 +367,17 @@ public:
 		for(int k=0; k<= Drawnum; k++) 
 			CHand[k].Handrender(dc);
 		
+
+		if (atkparamater1 != -1 && atkparamater2 != -1){
+			attackreder(dc, atkparamater1, atkparamater2);
+
+			if (Cdeck[atkparamater1].atkMoveFlag == 2)
+			{
+				atkparamater1 = -1;
+				atkparamater2 = -1;
+			}
+		}
+
 	
 		if (hangnum > -1){
 			POINT pos = InputManager::getInstance()->getMousePos();
@@ -379,15 +392,6 @@ public:
 
 		arrowRender(dc);
 
-		if (atkparamater1 != -1 && atkparamater2 != -1){
-			attackreder(dc, atkparamater1, atkparamater2);
-
-			if (Cdeck[atkparamater1].atkMoveFlag == 0)
-			{
-				atkparamater1 = -1;
-				atkparamater2 = -1;
-			}
-		}
 
 	}
 
@@ -570,7 +574,16 @@ public:
 		for (int k = 0; k <= Drawnum; k++)
 			CHand[k].Back_Handrender(dc);
 
-	
+		if (atkparamater1 != -1 && atkparamater2 != -1){
+			attackreder(dc, atkparamater1, atkparamater2);
+
+			if (Cdeck[atkparamater1].atkMoveFlag == 2)
+			{
+				atkparamater1 = -1;
+				atkparamater2 = -1;
+			}
+		}
+
 
 
 		for (int i = 0; i < 8; i++)
@@ -579,15 +592,6 @@ public:
 				Cdeck[Cfield[i]].Fieldrender(dc, E_Field[i].left, E_Field[i].top);
 		}
 
-		if (atkparamater1 != -1 && atkparamater2 != -1){
-			attackreder(dc, atkparamater1, atkparamater2);
-
-			if (Cdeck[atkparamater1].atkMoveFlag == 0)
-			{
-				atkparamater1 = -1;
-				atkparamater2 = -1;
-			}
-		}
 
 
 		
@@ -622,11 +626,14 @@ public:
 			if (GetTickCount() - shortTick > 500){
 				if (Cfield[k] > -1){
 					shortTick = GetTickCount();
-					Cdeck[Cfield[k]].SetMoveFlag(1, PlayerRect.left, PlayerRect.top, 5, NULL);
-					other->PLife -= Cdeck[Cfield[k]].getCardAttack();
 
 					atkparamater1 = Cfield[k];
 					atkparamater2 = 8;
+
+					Cdeck[Cfield[k]].SetMoveFlag(1, PlayerRect.left, PlayerRect.top, 5, NULL);
+					other->PLife -= Cdeck[Cfield[k]].getCardAttack();
+
+
 
 					if (k++ > 7) k = 7;
 					shortTick = GetTickCount();
@@ -666,7 +673,10 @@ public:
 
 	void FieldAttack(){
 		if (!Myturn || hangnum != -1)
+		{
 			return;
+		}
+
 
 		
 			DWORD key = InputManager::getInstance()->getKeyState();
@@ -675,8 +685,7 @@ public:
 			RECT remp;
 			if (key & MYKEY_FLAG::MK_LCLK)
 			{
-				int index = (pos.x - 130) / 91;
-
+				index = (pos.x - 130) / 91;
 				if (PtInRect(&Field[index], pos))
 				{
 					if (Cfield[index] > -1){
@@ -707,15 +716,16 @@ public:
 							atk_num = Cdeck[Cfield[temp]].getCardAttack();
 							arrowflag = false;
 
-
-							other->Cdeck[other->Cfield[index]].CLife -= Cdeck[Cfield[temp]].getCardAttack();
-							other->Cfield[index] = other->Cdeck[other->Cfield[index]].CheckDeathCard(other->Cfield[index]);
-
-							Cdeck[Cfield[temp]].CLife -= other->Cdeck[other->Cfield[index]].getCardAttack();
-							Cfield[temp] = Cdeck[Cfield[temp]].CheckDeathCard(Cfield[temp]);
-
 							atkparamater1 = Cfield[temp];
 							atkparamater2 = other->Cfield[index];
+
+
+
+
+							other->Cdeck[other->Cfield[index]].CLife -= Cdeck[Cfield[temp]].getCardAttack();
+							Cdeck[Cfield[temp]].CLife -= other->Cdeck[other->Cfield[index]].getCardAttack();
+
+
 
 							P_pass.Attackflag[plusnum][0] = temp;
 							P_pass.Attackflag[plusnum][1] = index;
@@ -724,11 +734,13 @@ public:
 					}
 						if (IntersectRect(&remp, &AtkPointer1.Source, &EnemyRect))
 						{
+							atkparamater1 = Cfield[temp];
+							atkparamater2 = 9;
+
 							Cdeck[Cfield[temp]].SetMoveFlag(1, EnemyRect.left, EnemyRect.top, 5, NULL);
 							other->PLife -= Cdeck[Cfield[temp]].getCardAttack();
 
-							atkparamater1 = Cfield[temp];
-							atkparamater2 = 9;
+
 
 							P_pass.Attackflag[plusnum][0] = temp;
 							P_pass.Attackflag[plusnum][1] = 8;
@@ -741,7 +753,11 @@ public:
 			else if (key & MYKEY_FLAG::MK_RCLK){
 				arrowflag = false;
 			}
-		
+			if (Cdeck[Cfield[temp]].atkMoveFlag == 2){
+				other->Cfield[index] = other->Cdeck[other->Cfield[index]].CheckDeathCard(other->Cfield[index]);
+				Cfield[temp] = Cdeck[Cfield[temp]].CheckDeathCard(Cfield[temp]);
+			}
+
 	}
 
 	void arrowRender(HDC& dc){
@@ -883,7 +899,7 @@ public:
 		if (efirstDraw){
 			efirstDraw = false;
 			for (int i = 0; i <= Drawnum; ++i)
-				CHand[i].SetCardPosition(Inven[i].left, 0);
+				Cdeck[i].SetCardPosition(Inven[i].left, 0);
 		}
 
 		if (E_turn){
@@ -899,21 +915,12 @@ public:
 		}
 
 		for (int k = 0; k <= Drawnum; k++)
-			CHand[k].Back_Handrender(dc);
-
-
-
-
-		for (int i = 0; i < 8; i++)
-		{
-			if (Cfield[i] > -1)
-				Cdeck[Cfield[i]].Fieldrender(dc, E_Field[i].left, E_Field[i].top);
-		}
+			Cdeck[k].Back_Handrender(dc);
 
 		if (atkparamater1 != -1 && atkparamater2 != -1){
 			attackreder(dc, atkparamater1, atkparamater2);
 
-			if (Cdeck[atkparamater1].atkMoveFlag == 0)
+			if (Cdeck[atkparamater1].atkMoveFlag == 2)
 			{
 				atkparamater1 = -1;
 				atkparamater2 = -1;
@@ -922,26 +929,36 @@ public:
 
 
 
+		for (int i = 0; i < 8; i++)
+		{
+			if (E_recv.Cfield[i] > -1)
+				Cdeck[E_recv.Cfield[i]].Fieldrender(dc, E_Field[i].left, E_Field[i].top);
+		}
+
+
+
+
 	}
 	
 
 	int k1 = 0;
 	void N_update(){
-		if (Myturn)
+		if (Myturn || E_recv.cTurn == false)
 			return;
 
 		if (!E_trunStart && E_turn == false){
 			E_trunStart = true;
-
+			for( int i=0; i<8; i++)
+				Cfield[i] = E_recv.Cfield[i];
 			shortTick = GetTickCount();
 		}
 
 
-		if (GetTickCount() - E_Tick < 500){
+		if ((GetTickCount() - E_Tick < 500) && E_trunStart){
 			E_Tick = GetTickCount();
 
 	//		int mana = E_SelectCard();
-//			E_trunStart = false;
+			E_trunStart = false;
 	//		PMana -= mana;
 
 			E_turn = true; // 턴 종료
@@ -950,50 +967,61 @@ public:
 		}
 
 		else {
-			if (GetTickCount() - shortTick < 500){
-				if (Cfield[k1] > -1){
+				if (E_recv.Cfield[k1] > -1){
+					if (GetTickCount() - shortTick > 500){
 					shortTick = GetTickCount();
 
 					if (E_recv.Attackflag[k1][0] > -1 && E_recv.Attackflag[k1][1] > -1) //k는 인트값 정수 초기값은 0 -> -1이면 공격신호가 없다. 
 					{
 						if (E_recv.Attackflag[k1][1] < 8) // 조건에 들어가야하는거는 카드를 공격
 						{
+							atkparamater1 = E_recv.Attackflag[k1][0];
+							atkparamater2 = E_recv.Attackflag[k1][1];
+
 							// 1이면 공격
 							Cdeck[Cfield[E_recv.Attackflag[k1][0]]].SetMoveFlag(1, Field[E_recv.Attackflag[k1][1]].left, Field[E_recv.Attackflag[k1][1]].top, 5, NULL);
 
+
+							other->Cfield[E_recv.Attackflag[k1][1]] = other->Cdeck[other->Cfield[E_recv.Attackflag[k1][1]]].CheckDeathCard(other->Cfield[E_recv.Attackflag[k1][1]]);
+							Cfield[E_recv.Attackflag[k1][1]] = Cdeck[Cfield[E_recv.Attackflag[k1][1]]].CheckDeathCard(Cfield[E_recv.Attackflag[k1][1]]);
+
+
+							Cdeck[Cfield[E_recv.Attackflag[k1][0]]].CLife -= other->Cdeck[other->Cfield[E_recv.Attackflag[k1][0]]].getCardAttack();
+
 							other->Cdeck[other->Cfield[E_recv.Attackflag[k1][1]]].CLife -= Cdeck[Cfield[E_recv.Attackflag[k1][0]]].getCardAttack();
-							other->Cfield[Cfield[E_recv.Attackflag[k1][1]]] = other->Cdeck[other->Cfield[Cfield[E_recv.Attackflag[k1][1]]]].CheckDeathCard(other->Cfield[Cfield[E_recv.Attackflag[k][1]]]);
 
-							Cdeck[Cfield[Cfield[E_recv.Attackflag[k1][0]]]].CLife -= other->Cdeck[other->Cfield[Cfield[E_recv.Attackflag[k1][0]]]].getCardAttack();
-							Cfield[Cfield[E_recv.Attackflag[k1][1]]] = Cdeck[Cfield[Cfield[E_recv.Attackflag[k1][1]]]].CheckDeathCard(Cfield[Cfield[E_recv.Attackflag[k1][1]]]);
 
-							atkparamater1 = Cfield[Cfield[E_recv.Attackflag[k1][1]]];
-							atkparamater2 = other->Cfield[Cfield[E_recv.Attackflag[k1][0]]];
+
 						}
 
 						if (E_recv.Attackflag[k1][1] == 8) //조건에 들어가야하는거는 나를 공격
 						{
-							Cdeck[Cfield[Cfield[E_recv.Attackflag[k1][0]]]].SetMoveFlag(1, PlayerRect.left, PlayerRect.top, 5, NULL);
-							other->PLife -= Cdeck[Cfield[Cfield[E_recv.Attackflag[k1][0]]]].getCardAttack();
+							atkparamater1 = E_recv.Attackflag[k1][0];
+							atkparamater2 = E_recv.Attackflag[k1][1];
 
-							atkparamater1 = Cfield[Cfield[E_recv.Attackflag[k1][0]]];
-							atkparamater2 = 8;
+							Cdeck[E_recv.Cfield[E_recv.Attackflag[k1][0]]].SetMoveFlag(1, PlayerRect.left, PlayerRect.top, 5, NULL);
+							other->PLife -= Cdeck[E_recv.Cfield[E_recv.Attackflag[k1][0]]].getCardAttack();
+
+
 						}
 
-						if (k++ > 7){
-							k = 7;
+						if (k1++ > 7){
+							k1 = 7;
 							E_Tick = GetTickCount();
 						}
 						shortTick = GetTickCount();
 
 
 					}
+					else {
+						E_Tick = GetTickCount();
+					}
+				}
+			}
+				else{
+					E_Tick = GetTickCount();
 				}
 
-			}
-			else if ((E_recv.cTurn == true)){
-				E_Tick = GetTickCount();
-			}
 		}
 
 	}
@@ -1039,7 +1067,7 @@ public:
 				P_pass.Attackflag[i][j] = -1;
 			}
 		}
-
+		plusnum = 0;
 		P_pass.E_Hand = -1;
 		P_pass.cTurn = false;
 	}
@@ -1074,6 +1102,7 @@ public:
 				{
 					if (PtInRect(&TurnButtonON.Source, pos))
 						Net_changeTurn();
+
 
 					E_recv.cTurn = false;
 				}

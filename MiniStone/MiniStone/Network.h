@@ -139,7 +139,6 @@ public:
 				break;
 
 			E_recv = recvpss;
-			int a = 10;
 
 			for (int i = 0; i < 8; i++){
 				recvpss.Cfield[i] = -1;

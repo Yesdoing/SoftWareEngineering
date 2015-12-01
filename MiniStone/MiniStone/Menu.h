@@ -113,25 +113,6 @@ public:
 		}
 	}
 
-	//void Menurender(const HDC& dc){
-	//	BitBlt(dc, 0, 0, MenuInterface.Bit.bmWidth, MenuInterface.Bit.bmHeight, MenuInterface.mDC, 0, 0, SRCCOPY);// 비트맵출력부분
-	//}
-
-	//void Menu1_render(const HDC& dc){
-	//	BitBlt(dc, 0, 0, Menu1.Bit.bmWidth, Menu1.Bit.bmHeight, Menu1.mDC, 0, 0, SRCCOPY);// 비트맵출력부분
-	//}
-
-	//void Menu2_render(const HDC& dc){
-	//	BitBlt(dc, 0, 0, Menu2.Bit.bmWidth, Menu2.Bit.bmHeight, Menu2.mDC, 0, 0, SRCCOPY);// 비트맵출력부분
-	//}
-
-	//void Menu3_render(const HDC& dc){
-	//	BitBlt(dc, 0, 0, Menu3.Bit.bmWidth, Menu3.Bit.bmHeight, Menu3.mDC, 0, 0, SRCCOPY);// 비트맵출력부분
-	//}
-
-	//void Menu4_render(const HDC& dc){
-	//	BitBlt(dc, 0, 0, Menu4.Bit.bmWidth, Menu4.Bit.bmHeight, Menu4.mDC, 0, 0, SRCCOPY);// 비트맵출력부분
-	//}
 	bool offOpening = true;
 	int GetState(){
 		POINT _pos = InputManager::getInstance()->getMousePos();
