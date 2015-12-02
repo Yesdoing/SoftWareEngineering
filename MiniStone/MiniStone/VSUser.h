@@ -59,8 +59,8 @@ public:
 
 	}
 
-	int relesae(){
-		return P1.checkVictory();
+	int relesae(HDC& dc){
+		return P1.checkVictory(dc);
 	}
 
 	void setMode(){

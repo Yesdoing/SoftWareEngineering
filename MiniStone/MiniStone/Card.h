@@ -43,6 +43,7 @@ protected:
 
 
 public:
+	bool atkflag;
 	int			CMana;
 	int			CLife;
 	SImageDB	Fieldimg;
@@ -101,7 +102,7 @@ public:
 		CardSize = 5;
 
 
-
+		atkflag = false;
 		strcpy(this->Cnum, _Cnum);
 		strcpy(this->Cname, _Cname);
 		this->CAttack = _CAtk;
@@ -333,6 +334,7 @@ public:
 		DeleteObject(Back_img.hBit);
 		DeleteDC(Back_img.mDC);
 		handimg.mDC = 0;
+		CardState = STA_FIELD;
 	}
 
 	int atkMoveFlag = 0;
@@ -415,7 +417,7 @@ public:
 			return false;
 
 	}
-	bool atkflag = true;
+
 
 	void AttackCard(){
 		if (moveCard()){

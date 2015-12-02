@@ -34,18 +34,7 @@ private:
 	MCI_PLAY_PARMS mciPlay;
 
 public:
-	void Initialize(){
-		///////////배경음 초기화////////////
-		mciOpen.lpstrDeviceType = "mpegvideo";  // mpegvideo : mp3, waveaudio : wav, avivideo : avi
-		mciOpen.lpstrElementName = "./Sound/bgm.wav"; // 파일이름
-		mciSendCommand(0, MCI_OPEN, MCI_OPEN_ELEMENT | MCI_OPEN_TYPE | MCI_OPEN_TYPE, (DWORD)(LPVOID)&mciOpen);
-		/////////////////////////
-
-
-		// 재생/////////////
-		dwID = mciOpen.wDeviceID;
-		mciSendCommand(dwID, MCI_PLAY, MCI_DGV_PLAY_REPEAT, (DWORD)(LPVOID)&mciPlay);
-		//////////////////
+	void Initialize(){	
 
 		// 랜더링//
 		dc = GetDC(g_hWnd);
@@ -80,7 +69,7 @@ public:
 		else if (GameState == 1){
 			battle1.update();
 
-			if (battle1.relesae() == -1){
+			if (battle1.relesae(dc) == -1){
 				GameState = 0;
 				GameInit = true;
 			}
@@ -89,7 +78,7 @@ public:
 		else if (GameState == 2){
 			v1.update();
 
-			if (v1.relesae() == -1){
+			if (v1.relesae(dc) == -1){
 				GameState = 0;
 				GameInit2 = true;
 			}
@@ -137,14 +126,26 @@ public:
 	}
 
 	void render(){
-		if(GameState == 0)
+		if (GameState == 0){
+			///////////배경음 초기화////////////
+			mciOpen.lpstrDeviceType = "mpegvideo";  // mpegvideo : mp3, waveaudio : wav, avivideo : avi
+			mciOpen.lpstrElementName = ".\\Sound\\bgm.wav"; // 파일이름
+			mciSendCommand(0, MCI_OPEN, MCI_OPEN_ELEMENT | MCI_OPEN_TYPE | MCI_OPEN_TYPE, (DWORD)(LPVOID)&mciOpen);
+			/////////////////////////
+
+
+			// 재생/////////////
+			dwID = mciOpen.wDeviceID;
+			mciSendCommand(dwID, MCI_PLAY, MCI_DGV_PLAY_REPEAT, (DWORD)(LPVOID)&mciPlay);
+			//////////////////
+
 			MenuIF.render(backDC);
+		}
 		else if (GameState == 1){
 			////////////플레이 사운드//////////////
 			if (sound == TRUE){
 				mciSendCommandW(dwID, MCI_CLOSE, 0, NULL);
 
-				mciOpen.lpstrDeviceType = "mpegvideo";  // mpegvideo : mp3, waveaudio : wav, avivideo : avi
 				mciOpen.lpstrElementName = ".\\Sound\\bgm2.wav"; // 파일이름
 				mciSendCommand(0, MCI_OPEN, MCI_OPEN_ELEMENT | MCI_OPEN_TYPE | MCI_OPEN_TYPE, (DWORD)(LPVOID)&mciOpen);
 				/////////////////////////

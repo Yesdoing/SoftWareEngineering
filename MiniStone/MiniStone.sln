@@ -15,6 +15,7 @@ Global
 		{36997B34-7599-4B98-92F7-5473D393DC30}.Debug|Win32.Build.0 = Debug|Win32
 		{36997B34-7599-4B98-92F7-5473D393DC30}.Release|Win32.ActiveCfg = Release|Win32
 		{36997B34-7599-4B98-92F7-5473D393DC30}.Release|Win32.Build.0 = Release|Win32
+		{36997B34-7599-4B98-92F7-5473D393DC30}.Release|Win32.Deploy.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

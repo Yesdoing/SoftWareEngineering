@@ -26,14 +26,14 @@ private:
 
 public:
 	void init(){
-		Opening.hBit = (HBITMAP)LoadImage(NULL, "./Menu/Opening.bmp", IMAGE_BITMAP,
+		Opening.hBit = (HBITMAP)LoadImage(NULL, ".\\Menu\\Opening.bmp", IMAGE_BITMAP,
 			0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 		GetObject(Opening.hBit, sizeof(Opening.Bit), &Opening.Bit);
 		HDC hdc = GetDC(g_hWnd);
 		Opening.mDC = CreateCompatibleDC(hdc);
 		SelectObject(Opening.mDC, Opening.hBit);
 
-		MenuInterface.hBit = (HBITMAP)LoadImage(NULL, "./Menu/menu.bmp", IMAGE_BITMAP,
+		MenuInterface.hBit = (HBITMAP)LoadImage(NULL, ".\\Menu\\menu.bmp", IMAGE_BITMAP,
 			0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 		GetObject(MenuInterface.hBit, sizeof(MenuInterface.Bit), &MenuInterface.Bit);
 		MenuInterface.mDC = CreateCompatibleDC(hdc);
@@ -64,10 +64,10 @@ public:
 		SelectObject(Menu4.mDC, Menu4.hBit);
 
 
-			M1.left = 430;
-			M1.top = 218;
-			M1.right = 595;
-			M1.bottom = 245;
+		M1.left = 430;
+		M1.top = 218;
+		M1.right = 595;
+		M1.bottom = 245;
 
 		M2.left = 397;
 		M2.top = 278;

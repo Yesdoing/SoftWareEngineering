@@ -66,6 +66,9 @@ private:
 		SImageDB	Lifeimg;
 		SImageDB	Manaimg;
 		SImageDB	AttackEffet;
+		SImageDB	Winimg;
+		SImageDB	Loseimg;
+
 
 		Card		CHand[30];
 		Card		Cdeck[30];
@@ -222,6 +225,17 @@ public:
 		GetObject(AttackEffet.hBit, sizeof(AttackEffet.Bit), &AttackEffet.Bit);
 		SelectObject(AttackEffet.mDC, AttackEffet.hBit);
 
+		
+		Winimg.hBit = (HBITMAP)LoadImage(NULL, "./GameUI/win.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		Winimg.mDC = CreateCompatibleDC(GetDC(GetFocus()));
+		GetObject(Winimg.hBit, sizeof(Winimg.Bit), &Winimg.Bit);
+		SelectObject(Winimg.mDC, Winimg.hBit);
+
+		
+		Loseimg.hBit = (HBITMAP)LoadImage(NULL, "./GameUI/lose.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		Loseimg.mDC = CreateCompatibleDC(GetDC(GetFocus()));
+		GetObject(Loseimg.hBit, sizeof(Loseimg.Bit), &Loseimg.Bit);
+		SelectObject(Loseimg.mDC, Loseimg.hBit);
 
 		EnemyRect.left = 475;
 		EnemyRect.top = 119;
@@ -254,13 +268,15 @@ public:
 
 		turnStart = true;
 		arrowflag = false;
-		atkparamater1 = -1, atkparamater2 = -1;
+		atkparamater1 = -1;
+		atkparamater2 = -1;
 		plusnum = 0;
 		k = 0;
 		E_Tick = 0;
 		shortTick = 0;
 		E_trunStart = false;
 		index = -1;
+		srand((unsigned)time(NULL));
 	}
 
 	void startDeck(int firstcarddeck){
@@ -284,7 +300,7 @@ public:
 	}
 
 	void getOneCard(){
-		srand((unsigned)time(NULL));
+
 		int temp = rand() % CARDMAX;
 
 		for (int i = 0; i <= Drawnum; ++i){
@@ -516,6 +532,7 @@ public:
 		if (++MaxMana > 10)
 			MaxMana = 10;
 
+		plusnum = 0;
 		P_pass.E_Hand = Drawnum;
 		P_pass.cTurn = false;
 
@@ -627,7 +644,7 @@ public:
 				if (Cfield[k] > -1){
 					shortTick = GetTickCount();
 
-					atkparamater1 = Cfield[k];
+					atkparamater1 = Cfield[k];	
 					atkparamater2 = 8;
 
 					Cdeck[Cfield[k]].SetMoveFlag(1, PlayerRect.left, PlayerRect.top, 5, NULL);
@@ -635,9 +652,11 @@ public:
 
 
 
-					if (k++ > 7) k = 7;
+					if (k++ > 6) k = 7;
 					shortTick = GetTickCount();
 				}
+				else
+					if (k++ > 6) k = 7;
 			}
 		}
 		
@@ -646,7 +665,7 @@ public:
 	int E_SelectCard(){
 		int temp = rand() % Drawnum;
 		for (int i = 0; i < 8; i++){
-			if (CHand[temp].getCindex() == Cfield[i]){
+			if ((CHand[temp].getCindex() == Cfield[i]) || (Cdeck[CHand[temp].getCindex()].getCardState() == STA_DEAD)){
 				temp = rand() % Drawnum;
 				i = -1;
 				continue;
@@ -709,6 +728,9 @@ public:
 						if (IntersectRect(&remp, &AtkPointer1.Source, &E_Field[index]))
 						{
 							// 1이면 공격
+							P_pass.Attackflag[plusnum][0] = temp;
+							P_pass.Attackflag[plusnum][1] = index;
+
 							Cdeck[Cfield[temp]].SetMoveFlag(1, E_Field[index].left, E_Field[index].top, 5, NULL);
 
 							atk_index = temp;
@@ -720,20 +742,19 @@ public:
 							atkparamater2 = other->Cfield[index];
 
 
-
-
 							other->Cdeck[other->Cfield[index]].CLife -= Cdeck[Cfield[temp]].getCardAttack();
 							Cdeck[Cfield[temp]].CLife -= other->Cdeck[other->Cfield[index]].getCardAttack();
 
 
 
-							P_pass.Attackflag[plusnum][0] = temp;
-							P_pass.Attackflag[plusnum][1] = index;
 							if (plusnum++ > 8) plusnum = 7;
 						}
 					}
 						if (IntersectRect(&remp, &AtkPointer1.Source, &EnemyRect))
 						{
+							P_pass.Attackflag[plusnum][0] = temp;
+							P_pass.Attackflag[plusnum][1] = 8;
+
 							atkparamater1 = Cfield[temp];
 							atkparamater2 = 9;
 
@@ -742,8 +763,6 @@ public:
 
 
 
-							P_pass.Attackflag[plusnum][0] = temp;
-							P_pass.Attackflag[plusnum][1] = 8;
 							if (plusnum++ > 8) plusnum = 7;
 
 							arrowflag = false;
@@ -753,6 +772,7 @@ public:
 			else if (key & MYKEY_FLAG::MK_RCLK){
 				arrowflag = false;
 			}
+
 			if (Cdeck[Cfield[temp]].atkMoveFlag == 2){
 				other->Cfield[index] = other->Cdeck[other->Cfield[index]].CheckDeathCard(other->Cfield[index]);
 				Cfield[temp] = Cdeck[Cfield[temp]].CheckDeathCard(Cfield[temp]);
@@ -881,15 +901,22 @@ public:
 	}
 	*/
 
-	int checkVictory(){
+	int checkVictory(HDC& dc){
 		if (PLife <= 0){
-			other->efirstDraw = true;
-			firstDraw = true;
+			DWORD endtick = GetTickCount();
+			while (GetTickCount() - endtick < 4000)
+			{
+				BitBlt(dc, 0, 0, Loseimg.Bit.bmWidth, Loseimg.Bit.bmHeight, Loseimg.mDC, 0, 0, SRCCOPY);
+			}
 			return -1;
 		}
 		else if (other->PLife <= 0){
-			other->efirstDraw = true;
-			firstDraw = true;
+			Network::getInstance()->send_message(P_pass);
+			DWORD endtick = GetTickCount();
+			while (GetTickCount() - endtick < 5000)
+			{
+				BitBlt(dc, 0, 0, Winimg.Bit.bmWidth, Winimg.Bit.bmHeight, Winimg.mDC, 0, 0, SRCCOPY);
+			}
 			return -1;
 		}
 		else return 1;
@@ -920,7 +947,7 @@ public:
 		if (atkparamater1 != -1 && atkparamater2 != -1){
 			attackreder(dc, atkparamater1, atkparamater2);
 
-			if (Cdeck[atkparamater1].atkMoveFlag == 2)
+			if (Cdeck[atkparamater1].atkMoveFlag == 0)
 			{
 				atkparamater1 = -1;
 				atkparamater2 = -1;
@@ -948,8 +975,11 @@ public:
 
 		if (!E_trunStart && E_turn == false){
 			E_trunStart = true;
-			for( int i=0; i<8; i++)
-				Cfield[i] = E_recv.Cfield[i];
+			for (int i = 0; i < 8; i++)
+			{
+				if(Cfield[i] == -1)
+					Cfield[i] = E_recv.Cfield[i];
+			}
 			shortTick = GetTickCount();
 		}
 
@@ -967,7 +997,7 @@ public:
 		}
 
 		else {
-				if (E_recv.Cfield[k1] > -1){
+				if (Cfield[k1] > -1){
 					if (GetTickCount() - shortTick > 500){
 					shortTick = GetTickCount();
 
@@ -981,14 +1011,14 @@ public:
 							// 1이면 공격
 							Cdeck[Cfield[E_recv.Attackflag[k1][0]]].SetMoveFlag(1, Field[E_recv.Attackflag[k1][1]].left, Field[E_recv.Attackflag[k1][1]].top, 5, NULL);
 
+							Cdeck[Cfield[E_recv.Attackflag[k1][0]]].CLife -= other->Cdeck[other->Cfield[E_recv.Attackflag[k1][0]]].getCardAttack();
+
+							other->Cdeck[other->Cfield[E_recv.Attackflag[k1][1]]].CLife -= Cdeck[Cfield[E_recv.Attackflag[k1][0]]].getCardAttack();
+
 
 							other->Cfield[E_recv.Attackflag[k1][1]] = other->Cdeck[other->Cfield[E_recv.Attackflag[k1][1]]].CheckDeathCard(other->Cfield[E_recv.Attackflag[k1][1]]);
 							Cfield[E_recv.Attackflag[k1][1]] = Cdeck[Cfield[E_recv.Attackflag[k1][1]]].CheckDeathCard(Cfield[E_recv.Attackflag[k1][1]]);
 
-
-							Cdeck[Cfield[E_recv.Attackflag[k1][0]]].CLife -= other->Cdeck[other->Cfield[E_recv.Attackflag[k1][0]]].getCardAttack();
-
-							other->Cdeck[other->Cfield[E_recv.Attackflag[k1][1]]].CLife -= Cdeck[Cfield[E_recv.Attackflag[k1][0]]].getCardAttack();
 
 
 
@@ -1039,13 +1069,15 @@ public:
 					}
 				}
 			}
+//			PlaySound(TEXT(".\\Sound\\Attack.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_NODEFAULT);
 		}
 
 		for (int i = 0; i < 8; i++){
 			if (Cfield[i] > -1)
 				Cdeck[Cfield[i]].atkflag = true;
 
-			P_pass.Cfield[i] = Cfield[i];
+			if(Cfield[i] > -1)
+				P_pass.Cfield[i] = Cfield[i];
 		}
 
 		if (++MaxMana > 10)
@@ -1076,6 +1108,10 @@ public:
 		DWORD key = InputManager::getInstance()->getKeyState();
 		FieldAttack();
 		if (Myturn){
+			//for (int i = 0; i < 8; i++){
+			//	other->Cfield[i] = other->Cdeck[other->Cfield[i]].CheckDeathCard(other->Cfield[i]);
+			//	Cfield[i] = Cdeck[Cfield[i]].CheckDeathCard(Cfield[i]);
+			//}
 			if (key & MYKEY_FLAG::MK_LCLK){
 				RECT rc;
 				SetRect(&rc, Inven[0].left, Inven[0].top, Inven[29].right, Inven[0].bottom);

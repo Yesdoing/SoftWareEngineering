@@ -3,8 +3,8 @@
 #include "MainFraimWork.h"
 #include "GameBoard.h"
 
-HWND				g_hWnd;
-HINSTANCE		g_hInstance;
+HWND				g_hWnd = 0;
+HINSTANCE		g_hInstance = 0;
 
 //
 void Initialize();
