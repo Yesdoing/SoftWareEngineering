@@ -355,7 +355,7 @@ public:
 			getOneCard();
 
 			CHand[Drawnum].SetCardPosition(Inven[Drawnum].left, Inven[Drawnum].top);
-
+			PlaySound(".\\Sound\\myturn.wav", NULL, SND_FILENAME | SND_ASYNC | SND_NODEFAULT);
 			ExDrawImg = CHand[Drawnum];
 			ExDrawImg.SetCardPosition(850, 413);
 			ExDrawImg.SetCardSize(3);
@@ -387,7 +387,7 @@ public:
 		if (atkparamater1 != -1 && atkparamater2 != -1){
 			attackreder(dc, atkparamater1, atkparamater2);
 
-			if (Cdeck[atkparamater1].atkMoveFlag == 2)
+			if (Cdeck[atkparamater1].atkMoveFlag == 0 || Cdeck[atkparamater1].CLife < 1)
 			{
 				atkparamater1 = -1;
 				atkparamater2 = -1;
@@ -458,6 +458,7 @@ public:
 
 
 	void addMyfield(int _index){
+		PlaySound(".\\Sound\\make.wav", NULL, SND_FILENAME | SND_ASYNC | SND_NODEFAULT);
 		for (int i = 0; i < 8; i++){
 			if (-1 == Cfield[i] ) {
 				Cfield[i] = _index;
@@ -583,8 +584,6 @@ public:
 
 			CHand[Drawnum].SetCardPosition(Inven[Drawnum].left, 0);
 
-	//		attackreder(dc);
-
 
 		}
 			
@@ -594,7 +593,7 @@ public:
 		if (atkparamater1 != -1 && atkparamater2 != -1){
 			attackreder(dc, atkparamater1, atkparamater2);
 
-			if (Cdeck[atkparamater1].atkMoveFlag == 2)
+			if (Cdeck[atkparamater1].atkMoveFlag == 0 || Cdeck[atkparamater1].CLife < 1)
 			{
 				atkparamater1 = -1;
 				atkparamater2 = -1;
@@ -721,8 +720,8 @@ public:
 				{
 					AtkPointer1.Source.left = pos.x;
 					AtkPointer1.Source.top = pos.y;
-					AtkPointer1.Source.right = pos.x + 108;
-					AtkPointer1.Source.bottom = pos.y + 107;
+					AtkPointer1.Source.right = pos.x + 30;
+					AtkPointer1.Source.bottom = pos.y + 30;
 					if (other->Cfield[index] > -1)
 					{
 						if (IntersectRect(&remp, &AtkPointer1.Source, &E_Field[index]))
@@ -733,9 +732,6 @@ public:
 
 							Cdeck[Cfield[temp]].SetMoveFlag(1, E_Field[index].left, E_Field[index].top, 5, NULL);
 
-							atk_index = temp;
-							dmg_index = index;
-							atk_num = Cdeck[Cfield[temp]].getCardAttack();
 							arrowflag = false;
 
 							atkparamater1 = Cfield[temp];
@@ -758,7 +754,7 @@ public:
 							atkparamater1 = Cfield[temp];
 							atkparamater2 = 9;
 
-							Cdeck[Cfield[temp]].SetMoveFlag(1, EnemyRect.left, EnemyRect.top, 5, NULL);
+							Cdeck[Cfield[temp]].SetMoveFlag(1, EnemyRect.left+20, EnemyRect.bottom, 7, NULL);
 							other->PLife -= Cdeck[Cfield[temp]].getCardAttack();
 
 
@@ -773,7 +769,7 @@ public:
 				arrowflag = false;
 			}
 
-			if (Cdeck[Cfield[temp]].atkMoveFlag == 2){
+			if (Cdeck[Cfield[temp]].atkMoveFlag == 2 && atkparamater2 != 9){
 				other->Cfield[index] = other->Cdeck[other->Cfield[index]].CheckDeathCard(other->Cfield[index]);
 				Cfield[temp] = Cdeck[Cfield[temp]].CheckDeathCard(Cfield[temp]);
 			}
@@ -893,17 +889,12 @@ public:
 		}
 	}
 	
-	
 
-	/*
-	void attackEffectRender(){
-		어택플래그 2일때 뜨도록 하고 적에 대한 처리는 other가져와서하는걸로...
-	}
-	*/
 
 	int checkVictory(HDC& dc){
 		if (PLife <= 0){
 			DWORD endtick = GetTickCount();
+			Network::getInstance()->relase();
 			while (GetTickCount() - endtick < 4000)
 			{
 				BitBlt(dc, 0, 0, Loseimg.Bit.bmWidth, Loseimg.Bit.bmHeight, Loseimg.mDC, 0, 0, SRCCOPY);
@@ -911,9 +902,10 @@ public:
 			return -1;
 		}
 		else if (other->PLife <= 0){
-			Network::getInstance()->send_message(P_pass);
+			Net_changeTurn();
 			DWORD endtick = GetTickCount();
-			while (GetTickCount() - endtick < 5000)
+			Network::getInstance()->relase();
+			while (GetTickCount() - endtick < 4000)
 			{
 				BitBlt(dc, 0, 0, Winimg.Bit.bmWidth, Winimg.Bit.bmHeight, Winimg.mDC, 0, 0, SRCCOPY);
 			}
@@ -986,10 +978,7 @@ public:
 
 		if ((GetTickCount() - E_Tick < 500) && E_trunStart){
 			E_Tick = GetTickCount();
-
-	//		int mana = E_SelectCard();
 			E_trunStart = false;
-	//		PMana -= mana;
 
 			E_turn = true; // 턴 종료
 			k1 = 0;
@@ -1069,7 +1058,6 @@ public:
 					}
 				}
 			}
-//			PlaySound(TEXT(".\\Sound\\Attack.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_NODEFAULT);
 		}
 
 		for (int i = 0; i < 8; i++){
@@ -1102,16 +1090,19 @@ public:
 		plusnum = 0;
 		P_pass.E_Hand = -1;
 		P_pass.cTurn = false;
+
+		atkparamater1 = -1;
+		atkparamater2 = -1;
 	}
 
 	void Net_update(POINT pos){
 		DWORD key = InputManager::getInstance()->getKeyState();
 		FieldAttack();
 		if (Myturn){
-			//for (int i = 0; i < 8; i++){
-			//	other->Cfield[i] = other->Cdeck[other->Cfield[i]].CheckDeathCard(other->Cfield[i]);
-			//	Cfield[i] = Cdeck[Cfield[i]].CheckDeathCard(Cfield[i]);
-			//}
+			for (int i = 0; i < 8; i++){
+				other->Cfield[i] = other->Cdeck[other->Cfield[i]].CheckDeathCard(other->Cfield[i]);
+				Cfield[i] = Cdeck[Cfield[i]].CheckDeathCard(Cfield[i]);
+			}
 			if (key & MYKEY_FLAG::MK_LCLK){
 				RECT rc;
 				SetRect(&rc, Inven[0].left, Inven[0].top, Inven[29].right, Inven[0].bottom);
@@ -1143,7 +1134,6 @@ public:
 					E_recv.cTurn = false;
 				}
 			}
-			//			TurnFlag(pos);
 		}
 	}
 };

@@ -28,9 +28,9 @@ public:
 		GetObject(hBitmap, sizeof(bit), &bit);
 
 		HDC hdc = GetDC(g_hWnd);
-		mDC = CreateCompatibleDC(hdc);// MemDC 하는..솔직히 뭐하는건지 모름..-_-; 그냥사용한다는
+		mDC = CreateCompatibleDC(hdc);
 
-		SelectObject(mDC, hBitmap);////hBitmap 에서 warning 뜸...스펠링맞나..-_-; ******//
+		SelectObject(mDC, hBitmap);
 		// 랜더링//
 		ImageManager::getInstance()->init();
 		position.x = 655;

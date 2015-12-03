@@ -10,7 +10,6 @@ enum CType{
 struct SImageDB{
 	HDC	mDC;
 	HBITMAP hBit; //앞면 이미지
-//	HBITMAP BackBit; // 뒷면이미지
 	BITMAP Bit; //이미지 정보
 	RECT Source;
 	const char *str;

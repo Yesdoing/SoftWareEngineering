@@ -17,13 +17,6 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, INT){
 	ShowWindow(g_hWnd, SW_SHOWDEFAULT);
 	UpdateWindow(g_hWnd);
 
-
-	//CreateWindow(WINDOW_CLASSNAME, "ee",
-	//	WS_POPUPWINDOW | WS_VISIBLE , 0, 0,
-	//	800, 600, g_hWnd, NULL, g_hInstance, NULL);
-
-	//SetFocus(g_hWnd);
-
 	MSG msg;
 	ZeroMemory(&msg, sizeof(msg));
 

@@ -89,30 +89,11 @@ public:
 	void send_message(pass _info){
 		if (retval != INVALID_SOCKET || retval != SOCKET_ERROR)
 		{
-
-			// 딜레이 : CPU 점유율 감소용
-			//Sleep(10);
-			//printf("보낼 메시지 입력 : ");
-			//		fgets(buff, 1024, stdin);
-			//fgets((char*)&info, sizeof(info), stdin);
-
-
-			// 전송 결과 잘못 된 결과를 얻었을때 탈출
-			//	if (retval == INVALID_SOCKET || retval == SOCKET_ERROR) break;
-
-			// 서버로 보내는 글은 fgets 을 받고 나서 순차적으로 보냄
-			//ret = send(s, (char*)buff, strlen(buff), 0);
 			retval = send(sock, (char*)&_info, sizeof(struct pass), 0);
-
-			// 버퍼 초기화
-			//memset(buff, 0, 1024);
 
 		}
 
 		// 정상/비정상으로 서버와 통신 결과값이 틀린 값을 받았을 때
-		//	printf("서버와 연결이 끊겼습니다.\n");
-		//	closesocket(sock);
-		//	WSACleanup();
 	}
 	
 	// 받는 스레드 부분
@@ -130,7 +111,6 @@ public:
 			// 서버에서 주는 메시지를 실pass recvpss;	
 			int ret_thread = 65535;
 			char buff_thread[1024] = "";
-			//	ret_thread = recv(s, buff_thread, sizeof(buff_thread), 0);
 
 			ret_thread = recv(sock, (char*)&recvpss, sizeof(pass), 0);
 			
@@ -151,7 +131,6 @@ public:
 			recvpss.E_Hand = -1;
 			recvpss.cTurn = false;
 			// 정상적으로 받은 버퍼를 출력
-			//		printf("\n%d 메시지 받음 : %s", ret_thread, (char*)&info);
 
 
 
@@ -162,6 +141,11 @@ public:
 		retval = INVALID_SOCKET;
 
 		return;
+	}
+
+	void relase(){
+		closesocket(sock);
+		WSACleanup();
 	}
 
 	static Network *getInstance(){

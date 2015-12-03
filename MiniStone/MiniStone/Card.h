@@ -78,10 +78,6 @@ public:
 		Position.y = _y;
 	}
 
-	//RECT getCardRect(){
-	//	return handimg.Source;
-	//}
-
 	POINT getCardPosition(){
 		return Position;
 	}
@@ -150,7 +146,7 @@ public:
 		GetObject(Atkimg.hBit, sizeof(Atkimg.Bit), &Atkimg.Bit);
 		SelectObject(Atkimg.mDC, Atkimg.hBit);
 
-		Back_img.hBit = (HBITMAP)LoadImage(NULL, "./GameUI/000.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+		Back_img.hBit = (HBITMAP)LoadImage(NULL, "./GameUI/back.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 		Back_img.mDC = CreateCompatibleDC(GetDC(GetFocus()));
 		GetObject(Back_img.hBit, sizeof(Back_img.Bit), &Back_img.Bit);
 		SelectObject(Back_img.mDC, Back_img.hBit);
@@ -172,8 +168,6 @@ public:
 			handimg.Bit.bmWidth,
 			handimg.Bit.bmHeight,
 			RGB(255, 0, 255));
-
-//		CardState = STA_HAND;
 	}
 
 	void Back_Handrender(HDC& dc){
@@ -186,7 +180,6 @@ public:
 			Back_img.Bit.bmHeight,
 			RGB(255, 0, 255));
 
-		//		CardState = STA_HAND;
 	}
 
 	void Ex_Handrender(HDC& dc){
@@ -269,12 +262,6 @@ public:
 			RGB(255, 0, 255));
 	}
 	void cardSelect(POINT pos){
-
-//		RECT temp;
-//		temp = inven;
-		
-
-		
 		Position.x = pos.x;
 		Position.y = pos.y;
 
@@ -283,38 +270,22 @@ public:
 		handimg.Source.right = Position.x + (handimg.Bit.bmWidth / CardSize);
 		handimg.Source.bottom = Position.y + (handimg.Bit.bmWidth / CardSize);
 
-//		if (PtInRect(&inven, pos)){
-		//	if (_key & MYKEY_FLAG::MK_LCLK){
-				//if (!hang) hang = true;
-				//else hang = false;
 
 				Prevpos = InputManager::getInstance()->getMousePos();
-	//		}
-//		}
 
-		
-	//	if (hang){
 			POINT	moveCard;
 			moveCard.x = pos.x - Prevpos.x;
 			moveCard.y = pos.y - Prevpos.y;
 
 			Position.x += moveCard.x;
 			Position.y += moveCard.y;
-	//	}
-		
-		//if (_key & MYKEY_FLAG::MK_RCLK){
-		//	Position.x = temp.left;
-		//	Position.y = temp.top;
-		//	handimg.Source = temp;
-		//	hang = false;
-		//}
-
 
 		Prevpos = pos;
 	}
 
 	int CheckDeathCard(int _num){
 		if (CLife < 1){
+			PlaySound(".\\Sound\\die.wav", NULL, SND_FILENAME | SND_ASYNC | SND_NODEFAULT);
 			CardState = STA_DEAD;
 			Fieldrelease();
 			return -1;
@@ -342,13 +313,13 @@ public:
 
 	void SetMoveFlag(int _flag, int _x , int _y, int speed, Card* Tcard = NULL){
 		atkMoveFlag = _flag;
-
 		if (atkMoveFlag == 1){
 			temp = Position;
 			target.x = _x;
 			target.y = _y;
 		}
 		else if (atkMoveFlag == 2){
+			PlaySound(TEXT(".\\Sound\\attack.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_NODEFAULT);
 			target.x = _x;
 			target.y = _y;
 			atkflag = false;
@@ -425,7 +396,6 @@ public:
 				SetMoveFlag(2, temp.x, temp.y, 2);
 			}
 			else if (atkMoveFlag == 2){
-				PlaySound(TEXT("D:\\attack.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_NODEFAULT);
 				SetMoveFlag(0, temp.x, temp.y, 0);
 			}
 		}

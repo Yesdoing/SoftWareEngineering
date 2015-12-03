@@ -4,7 +4,7 @@
 #define WINDOW_CLASSNAME "MiniStone"
 #define PORT 5000			// 사용할 포트는 5000
 #define IP "165.229.86.107"		// 접속할 서버는 로컬 호스트
-
+//#define IP "165.229.132.103"
 
 #ifdef _DEBUG
 #define __DEV_MODE__

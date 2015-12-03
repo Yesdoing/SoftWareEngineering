@@ -70,6 +70,7 @@ public:
 			battle1.update();
 
 			if (battle1.relesae(dc) == -1){
+				mciSendCommandW(dwID, MCI_CLOSE, 0, NULL);
 				GameState = 0;
 				GameInit = true;
 			}
@@ -79,6 +80,7 @@ public:
 			v1.update();
 
 			if (v1.relesae(dc) == -1){
+				mciSendCommandW(dwID, MCI_CLOSE, 0, NULL);
 				GameState = 0;
 				GameInit2 = true;
 			}
@@ -125,25 +127,29 @@ public:
 	
 	}
 
+	int sound2 = true;
+
 	void render(){
 		if (GameState == 0){
-			///////////배경음 초기화////////////
-			mciOpen.lpstrDeviceType = "mpegvideo";  // mpegvideo : mp3, waveaudio : wav, avivideo : avi
-			mciOpen.lpstrElementName = ".\\Sound\\bgm.wav"; // 파일이름
-			mciSendCommand(0, MCI_OPEN, MCI_OPEN_ELEMENT | MCI_OPEN_TYPE | MCI_OPEN_TYPE, (DWORD)(LPVOID)&mciOpen);
-			/////////////////////////
+			if (sound == true){
+				///////////배경음 초기화////////////
+				mciOpen.lpstrDeviceType = "mpegvideo";  // mpegvideo : mp3, waveaudio : wav, avivideo : avi
+				mciOpen.lpstrElementName = ".\\Sound\\bgm.wav"; // 파일이름
+				mciSendCommand(0, MCI_OPEN, MCI_OPEN_ELEMENT | MCI_OPEN_TYPE | MCI_OPEN_TYPE, (DWORD)(LPVOID)&mciOpen);
+				/////////////////////////
 
 
-			// 재생/////////////
-			dwID = mciOpen.wDeviceID;
-			mciSendCommand(dwID, MCI_PLAY, MCI_DGV_PLAY_REPEAT, (DWORD)(LPVOID)&mciPlay);
-			//////////////////
-
+				// 재생/////////////
+				dwID = mciOpen.wDeviceID;
+				mciSendCommand(dwID, MCI_PLAY, MCI_DGV_PLAY_REPEAT, (DWORD)(LPVOID)&mciPlay);
+				//////////////////
+				sound = false;
+			}
 			MenuIF.render(backDC);
 		}
 		else if (GameState == 1){
 			////////////플레이 사운드//////////////
-			if (sound == TRUE){
+			if (sound2 == true){
 				mciSendCommandW(dwID, MCI_CLOSE, 0, NULL);
 
 				mciOpen.lpstrElementName = ".\\Sound\\bgm2.wav"; // 파일이름
@@ -154,7 +160,7 @@ public:
 				// 재생/////////////
 				dwID = mciOpen.wDeviceID;
 				mciSendCommand(dwID, MCI_PLAY, MCI_DGV_PLAY_REPEAT, (DWORD)(LPVOID)&mciPlay);
-				sound = FALSE;
+				sound2 = false;
 
 			}
 			////////////////////////////
@@ -163,6 +169,21 @@ public:
 		}
 
 		else if (GameState == 2){
+			////////////플레이 사운드//////////////
+			if (sound2 == true){
+				mciSendCommandW(dwID, MCI_CLOSE, 0, NULL);
+
+				mciOpen.lpstrElementName = ".\\Sound\\bgm2.wav"; // 파일이름
+				mciSendCommand(0, MCI_OPEN, MCI_OPEN_ELEMENT | MCI_OPEN_TYPE | MCI_OPEN_TYPE, (DWORD)(LPVOID)&mciOpen);
+				/////////////////////////
+
+
+				// 재생/////////////
+				dwID = mciOpen.wDeviceID;
+				mciSendCommand(dwID, MCI_PLAY, MCI_DGV_PLAY_REPEAT, (DWORD)(LPVOID)&mciPlay);
+				sound2 = false;
+			}
+
 			v1.render(backDC);
 		}
 
@@ -173,7 +194,6 @@ public:
 		BitBlt(dc, 0, 0, 1920, 1000, backDC, 0, 0, SRCCOPY);
 
 
-		//	SelectObject(backDC, o );
 
 	}
 

@@ -34,8 +34,6 @@ public:
 		POINT pos = InputManager::getInstance()->getMousePos();
 
 		board.update();
-		///		GameState = MenuIF.GetState();
-		//업데이트? Progress??
 		P1.Net_update(pos);
 		E1.N_update();
 

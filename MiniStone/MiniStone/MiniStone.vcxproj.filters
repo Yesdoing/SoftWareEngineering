@@ -9,10 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="리소스 파일">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="게임보드">
       <UniqueIdentifier>{64f42700-7c84-4131-a065-b28e34cb7230}</UniqueIdentifier>
     </Filter>
@@ -46,6 +42,9 @@
     <Filter Include="네트워크">
       <UniqueIdentifier>{711097ff-bfb6-4fbd-8e98-fec5399fcaa3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="리소스파일">
+      <UniqueIdentifier>{b2878237-fea4-478b-9aa4-0b71b788d45a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Winmain.cpp">
@@ -77,9 +76,6 @@
     </ClCompile>
     <ClCompile Include="Menu.cpp">
       <Filter>메뉴</Filter>
-    </ClCompile>
-    <ClCompile Include="ObjectControll.cpp">
-      <Filter>오브젝트</Filter>
     </ClCompile>
     <ClCompile Include="VSUser.cpp">
       <Filter>소스 파일</Filter>
@@ -134,14 +130,399 @@
     <ClInclude Include="Network.h">
       <Filter>네트워크</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectControll.h">
-      <Filter>오브젝트</Filter>
+    <ClInclude Include="resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="resource1.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="VSUser.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>소스 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
+    <None Include="POINTER.cur">
+      <Filter>리소스파일</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="CardFieldResource\001.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\002.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\003.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\004.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\005.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\006.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\007.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\008.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\009.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\010.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\011.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\012.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\013.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\014.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\015.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\016.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\017.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\018.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\019.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\020.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\021.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\022.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\023.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\024.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\025.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\026.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\027.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\028.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\029.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardFieldResource\030.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\001.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\002.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\003.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\004.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\005.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\006.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\007.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\008.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\009.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\010.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\011.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\012.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\013.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\014.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\015.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\016.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\017.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\018.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\019.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\020.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\021.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\022.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\023.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\024.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\025.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\026.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\027.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\028.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\029.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="CardResouce\030.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan\15.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan\02.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan\03.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan\04.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan\05.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan\06.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan\07.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan\08.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan\09.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan\10.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan\11.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan\12.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan\13.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan\14.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan\01.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan2\01.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan2\02.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan2\03.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan2\04.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan2\05.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan2\06.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan2\07.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan2\08.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan2\09.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan2\10.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan2\11.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan2\12.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan2\13.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan2\14.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="effect\wan2\15.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\01.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\02.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\arrow1.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\arrow2.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\arrow3.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\atk.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\back.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\blackworld.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\card1.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\card2.jpg">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\change.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\damage.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\kristal.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\life.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\lose.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\manual.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="Menu\menu.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="Menu\menu1-1.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="Menu\menu1-2.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="Menu\menu1-3.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="Menu\menu1-4.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\minji.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\myturn.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\myturn2.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\noMana.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="Menu\Opening.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\Rednum.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\suryun.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\turn.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\Whitenum.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\win.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\X.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\yourtrun.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="GameUI\yourturn.bmp">
+      <Filter>리소스파일</Filter>
+    </Image>
+    <Image Include="cardresouce\bitmap76.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MiniStone1.rc">
+      <Filter>리소스파일</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

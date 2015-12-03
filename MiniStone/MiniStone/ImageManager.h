@@ -29,8 +29,6 @@ private:
 
 	LISTOFVECTOR				listImgVec;
 	
-	
-	//HWND g_hWnd 이거 extern 말고 포인터로 받아서 사용해도되는지 확인..
 
 public:
 	static ImageManager *getInstance(){
@@ -93,10 +91,6 @@ public:
 		struct _finddata_t c_file;
 		intptr_t hFile = _findfirst(pathBuf, &c_file);
 		ImageVec* tempimg = new ImageVec();
-		//if (hFile == -1) { 
-		//	MYDBG_LOG("effect 폴더 디렉토리 읽기 실패");      // no files
-		//	return;
-		//}
 
 		_findnext(hFile, &c_file); // .
 		_findnext(hFile, &c_file); // ..
@@ -126,19 +120,12 @@ public:
 		struct _finddata_t c_file;
 		intptr_t hFile = _findfirst(pathBuf, &c_file);
 
-		//if (hFile == -1) { 
-		//	MYDBG_LOG("effect 폴더 디렉토리 읽기 실패");      // no files
-		//	return;
-		//}
-
-
 		_findnext(hFile, &c_file); // .
 		_findnext(hFile, &c_file); // ..
 
 		do{	
 			SImageDB* pimg = new SImageDB();
 
-			// _pathnameOfEffects 디렉토리 내 디렉토리명 검색 
 			char pathnameBuf[_MAX_PATH] = { 0, };
 			strcat_s(pathnameBuf, _MAX_PATH, _path);
 			strcat_s(pathnameBuf, _MAX_PATH, "/");
